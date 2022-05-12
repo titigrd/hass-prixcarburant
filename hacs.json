@@ -1,8 +1,8 @@
 {
-  "name": "prixCarburant",
+  "name": "prix_carburant",
   "country": "FR",
   "domains": ["sensor"],
   "render_readme": true,
-  "documentation": "https://github.com/ryann72/prixCarburant-home-assistant",
-  "homeassistant": "0.99.0"
+  "documentation": "https://github.com/aohzan/hass-prixcarburant",
+  "homeassistant": "2022.5.0"
 }
