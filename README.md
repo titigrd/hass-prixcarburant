@@ -11,7 +11,7 @@ Copier le dossier `prix_carburant` dans le dossier `config/custom_components` de
 
 Récupérer l'ID des stations voulues sur https://www.prix-carburants.gouv.fr/. Pour cela chercher la station, cliquer sur le logo station sur la carte, passer le curseur sur `Voir plan` et noter le numéro qui apparait en bas de votre navigateur. Exemple avec Firefox :
 
-![Récupération d'ID avec Firefox](firefox_id.png)
+![Récupération d'ID avec Firefox](readme_firefoxid.png)
 
 Puis dans le fichier configuration.yaml, mettre par exemple :
 
@@ -21,6 +21,26 @@ sensor:
   stations:
     - 59000009
     - 59000080
+```
+
+## Dashboard
+
+Exemple de configuration avec [multiple-entity-row](https://github.com/benct/lovelace-multiple-entity-row):
+
+![multiple-entity-row](readme_multipleentityrow.png)
+
+```yaml
+type: entities
+entities:
+  - entity: sensor.station_mastation_sp98
+    type: custom:multiple-entity-row
+    name: Ma Station
+    show_state: false
+    entities:
+      - entity: sensor.station_mastation_e10
+        name: E10
+      - entity: sensor.station_mastation_sp98
+        name: SP98
 ```
 
 ## TODO
