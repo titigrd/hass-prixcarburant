@@ -1,12 +1,14 @@
 """Tools for Prix Carburant."""
 import csv
 import logging
+from math import asin, cos, radians, sin, sqrt
 import urllib.request
 import zipfile
 
 import xmltodict
 
 from homeassistant.const import ATTR_DATE, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
+from homeassistant.util.unit_system import METRIC_SYSTEM, UnitSystem
 
 from .const import ATTR_ADDRESS, ATTR_CITY, ATTR_FUELS, ATTR_POSTAL_CODE, ATTR_PRICE
 
@@ -101,3 +103,42 @@ class PrixCarburantTool:
                         )
 
         self._stations_tarifs = data
+
+    def get_near_stations(
+        self,
+        latitude: float,
+        longitude: float,
+        distance: int,
+        units: UnitSystem = METRIC_SYSTEM,
+    ) -> list:
+        """Return list of station near the location."""
+        near_stations_ids = []
+        for station_id, station_info in self._stations_tarifs.items():
+            if station_info[ATTR_LATITUDE] and station_info[ATTR_LONGITUDE]:
+                station_distance = _get_distance(
+                    latitude,
+                    longitude,
+                    float(station_info[ATTR_LATITUDE]) / 100000,
+                    float(station_info[ATTR_LONGITUDE]) / 100000,
+                    units,
+                )
+                if station_distance <= distance:
+                    near_stations_ids.append(station_id)
+        return near_stations_ids
+
+
+def _get_distance(
+    lon1: float, lat1: float, lon2: float, lat2: float, units: UnitSystem
+) -> int:
+    """Get distance from 2 locations."""
+    # convert decimal degrees to radians
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    angle = 2 * asin(
+        sqrt(sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2)
+    )
+    earth_radius = 6371 if units == METRIC_SYSTEM else 3956
+    return int(angle * earth_radius)

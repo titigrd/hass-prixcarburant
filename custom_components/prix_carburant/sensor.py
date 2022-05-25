@@ -12,7 +12,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
 )
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import ATTR_NAME, CONF_LATITUDE, CONF_LONGITUDE, CURRENCY_EURO
+from homeassistant.const import ATTR_NAME, CURRENCY_EURO
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 import homeassistant.helpers.config_validation as cv
@@ -39,9 +39,7 @@ _LOGGER = logging.getLogger(__name__)
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_MAX_KM, default=10): cv.positive_int,
-        vol.Optional(CONF_LATITUDE): cv.latitude,
-        vol.Optional(CONF_LONGITUDE): cv.longitude,
+        vol.Optional(CONF_MAX_KM): cv.positive_int,
         vol.Optional(CONF_STATIONS, default=[]): cv.ensure_list,
     }
 )
@@ -70,10 +68,8 @@ async def async_setup_entry(
 ) -> None:
     """Set up the platform from config_entry."""
     config = entry.data
-    # latitude = config.get(CONF_LATITUDE, hass.config.latitude)
-    # longitude = config.get(CONF_LONGITUDE, hass.config.longitude)
-    # max_distance = config.get(CONF_MAX_KM)
-    config_stations_ids = [str(s) for s in config.get(CONF_STATIONS, [])]
+    options = entry.options
+    max_distance = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM))
 
     tool = await hass.async_add_executor_job(PrixCarburantTool)
 
@@ -95,14 +91,17 @@ async def async_setup_entry(
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
 
-    # user_stations_ids from location
-    # location = [{"lat": str(latitude), "lng": str(longitude)}]
-    # if not station_ids:
-    #     _LOGGER.info("No station list, find nearest station")
-    #     stations = client.foundNearestStation()
-    # else:
-    #     logging.info("Precessing station list")
-    #     _LOGGER = client.extractSpecificStation(station_ids)
+    if max_distance is not None:
+        _LOGGER.info("Get stations near Home-Assistant location")
+        config_stations_ids = tool.get_near_stations(
+            hass.config.latitude,
+            hass.config.longitude,
+            max_distance,
+            units=hass.config.units,
+        )
+    else:
+        _LOGGER.info("Get stations from list in configuration")
+        config_stations_ids = [str(s) for s in config.get(CONF_STATIONS, [])]
 
     user_stations_ids = [s for s in tool.stations if s in config_stations_ids]
     _LOGGER.info("%s stations found", str(len(user_stations_ids)))

@@ -2,9 +2,9 @@
   "config": {
     "step": {
       "user": {
-        "description": "Get stations from your Home-Assistant location (check general settings to check it)",
+        "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales)",
         "data": {
-          "max_km": "Maximum distance from home"
+          "max_km": "Distance maximum"
         }
       }
     },
@@ -16,12 +16,12 @@
     "step": {
       "init": {
         "data": {
-          "max_km": "Maximum distance from home"
+          "max_km": "Distance maximum"
         }
       }
     },
     "abort": {
-      "yaml_configuration": "Integration configured in configuration.yaml"
+      "yaml_configuration": "Intégration configurée depuis configuration.yaml"
     }
   }
 }
