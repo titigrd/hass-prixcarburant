@@ -2,6 +2,5 @@
   "name": "Prix Carburant",
   "country": "FR",
   "render_readme": true,
-  "documentation": "https://github.com/aohzan/hass-prixcarburant",
   "homeassistant": "2022.5.0"
 }
