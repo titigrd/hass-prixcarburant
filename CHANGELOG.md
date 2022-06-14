@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.0
+
+- Add latitude, longitude and last update date in attributes
+- Allow to select some fuels
+
 ## 2.1.0
 
 - Add config from UI

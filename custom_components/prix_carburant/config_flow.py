@@ -7,7 +7,7 @@ from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.core import callback
 
-from .const import CONF_MAX_KM, CONF_STATIONS, DEFAULT_NAME, DOMAIN
+from .const import CONF_FUELS, CONF_MAX_KM, CONF_STATIONS, DEFAULT_NAME, DOMAIN, FUELS
 
 
 class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -29,9 +29,20 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
         """Get configuration from the user."""
         errors = {}
         if user_input is None:
-            schema = vol.Schema({vol.Required(CONF_MAX_KM, default=10): int})
+            schema = {
+                vol.Required(CONF_MAX_KM, default=10): int,
+            }
+            for fuel in FUELS:
+                schema.update(
+                    {
+                        vol.Required(
+                            f"{CONF_FUELS}_{fuel}",
+                            default=True,
+                        ): bool
+                    }
+                )
             return self.async_show_form(
-                step_id="user", data_schema=schema, errors=errors
+                step_id="user", data_schema=vol.Schema(schema), errors=errors
             )
 
         entry = await self.async_set_unique_id(DOMAIN)
@@ -70,11 +81,22 @@ class PrixCarburantOptionsFlowHandler(config_entries.OptionsFlow):
         config = self.config_entry.data
         options = self.config_entry.options
 
-        if CONF_STATIONS in config:
-            return self.async_abort(reason="yaml_configuration")
-
         max_km = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM))
+        filtered_fuels = options.get(CONF_FUELS, config.get(CONF_FUELS, {}))
 
-        schema = vol.Schema({vol.Required(CONF_MAX_KM, default=max_km): int})
+        schema = {}
+        if CONF_STATIONS not in config:
+            schema.update({vol.Required(CONF_MAX_KM, default=max_km): int})
+        for fuel in FUELS:
+            schema.update(
+                {
+                    vol.Required(
+                        f"{CONF_FUELS}_{fuel}",
+                        default=filtered_fuels.get(fuel, True),
+                    ): bool
+                }
+            )
 
-        return self.async_show_form(step_id="init", data_schema=schema, errors=errors)
+        return self.async_show_form(
+            step_id="init", data_schema=vol.Schema(schema), errors=errors
+        )

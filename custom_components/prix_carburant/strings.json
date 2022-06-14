@@ -4,7 +4,13 @@
       "user": {
         "description": "Get stations from your Home-Assistant location (check general settings to check it)",
         "data": {
-          "max_km": "Maximum distance from home"
+          "max_km": "Maximum distance from home",
+          "fuels_Gazole": "Show Gazole",
+          "fuels_E10": "Show E10",
+          "fuels_E85": "Show E85",
+          "fuels_SP95": "Show SP95",
+          "fuels_SP98": "Show SP98",
+          "fuels_GPLc": "Show GPL"
         }
       }
     },
@@ -16,7 +22,13 @@
     "step": {
       "init": {
         "data": {
-          "max_km": "Maximum distance from home"
+          "max_km": "Maximum distance from home",
+          "fuels_Gazole": "Show Gazole",
+          "fuels_E10": "Show E10",
+          "fuels_E85": "Show E85",
+          "fuels_SP95": "Show SP95",
+          "fuels_SP98": "Show SP98",
+          "fuels_GPLc": "Show GPL"
         }
       }
     },

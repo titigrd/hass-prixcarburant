@@ -1,5 +1,6 @@
 """Tools for Prix Carburant."""
 import csv
+from datetime import datetime
 import logging
 from math import asin, cos, radians, sin, sqrt
 import urllib.request
@@ -10,7 +11,14 @@ import xmltodict
 from homeassistant.const import ATTR_DATE, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 from homeassistant.util.unit_system import METRIC_SYSTEM, UnitSystem
 
-from .const import ATTR_ADDRESS, ATTR_CITY, ATTR_FUELS, ATTR_POSTAL_CODE, ATTR_PRICE
+from .const import (
+    ATTR_ADDRESS,
+    ATTR_CITY,
+    ATTR_FUELS,
+    ATTR_POSTAL_CODE,
+    ATTR_PRICE,
+    ATTR_UPDATED_DATE,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -63,6 +71,7 @@ class PrixCarburantTool:
         filehandle, _ = urllib.request.urlretrieve(STATIONS_TARIFS_URL)
         with zipfile.ZipFile(filehandle, "r") as zip_file_object:
             with zip_file_object.open(zip_file_object.namelist()[0]) as file:
+                file_date = datetime(*zip_file_object.NameToInfo[file.name].date_time)
                 xml_content = file.read()
                 raw_content = xmltodict.parse(xml_content)
                 for station in raw_content["pdv_liste"]["pdv"]:
@@ -70,28 +79,28 @@ class PrixCarburantTool:
                         data.update(
                             {
                                 station["@id"]: {
-                                    ATTR_LATITUDE: station["@latitude"],
-                                    ATTR_LONGITUDE: station["@longitude"],
+                                    ATTR_LATITUDE: float(station["@latitude"]) / 100000,
+                                    ATTR_LONGITUDE: float(station["@longitude"])
+                                    / 100000,
                                     ATTR_ADDRESS: station["adresse"],
                                     ATTR_POSTAL_CODE: station["@cp"],
                                     ATTR_CITY: station["ville"],
                                     ATTR_NAME: "undefined",
+                                    ATTR_UPDATED_DATE: file_date,
                                     ATTR_FUELS: {},
                                 }
                             }
                         )
                         if "prix" in station:
-                            for carburant in station["prix"]:
-                                carburant_info = (
-                                    carburant
-                                    if isinstance(carburant, dict)
-                                    else station["prix"]
+                            for fuel in station["prix"]:
+                                fuel_info = (
+                                    fuel if isinstance(fuel, dict) else station["prix"]
                                 )
                                 data[station["@id"]][ATTR_FUELS].update(
                                     {
-                                        carburant_info["@nom"]: {
-                                            ATTR_DATE: carburant_info["@maj"],
-                                            ATTR_PRICE: carburant_info["@valeur"],
+                                        fuel_info["@nom"]: {
+                                            ATTR_DATE: fuel_info["@maj"],
+                                            ATTR_PRICE: fuel_info["@valeur"],
                                         }
                                     }
                                 )
@@ -118,8 +127,8 @@ class PrixCarburantTool:
                 station_distance = _get_distance(
                     latitude,
                     longitude,
-                    float(station_info[ATTR_LATITUDE]) / 100000,
-                    float(station_info[ATTR_LONGITUDE]) / 100000,
+                    float(station_info[ATTR_LATITUDE]),
+                    float(station_info[ATTR_LONGITUDE]),
                     units,
                 )
                 if station_distance <= distance:

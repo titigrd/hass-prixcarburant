@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales)",
+        "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales). Sélectionnez ensuite les carburants dont vous souhaitez obtenir les tarifs.",
         "data": {
-          "max_km": "Distance maximum"
+          "max_km": "Distance maximum",
+          "fuels_Gazole": "Afficher le gasoil",
+          "fuels_E10": "Afficher le E10",
+          "fuels_E85": "Afficher le E85",
+          "fuels_SP95": "Afficher le SP95",
+          "fuels_SP98": "Afficher le SP98",
+          "fuels_GPLc": "Afficher le GPL"
         }
       }
     },
@@ -16,7 +22,13 @@
     "step": {
       "init": {
         "data": {
-          "max_km": "Distance maximum"
+          "max_km": "Distance maximum",
+          "fuels_Gazole": "Afficher le gasoil",
+          "fuels_E10": "Afficher le E10",
+          "fuels_E85": "Afficher le E85",
+          "fuels_SP95": "Afficher le SP95",
+          "fuels_SP98": "Afficher le SP98",
+          "fuels_GPLc": "Afficher le GPL"
         }
       }
     },
