@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.1
+
+- Fix updated date
+
 ## 2.2.0
 
 - Add latitude, longitude and last update date in attributes

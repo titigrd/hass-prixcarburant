@@ -1,6 +1,5 @@
 """Tools for Prix Carburant."""
 import csv
-from datetime import datetime
 import logging
 from math import asin, cos, radians, sin, sqrt
 import urllib.request
@@ -8,7 +7,7 @@ import zipfile
 
 import xmltodict
 
-from homeassistant.const import ATTR_DATE, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
+from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 from homeassistant.util.unit_system import METRIC_SYSTEM, UnitSystem
 
 from .const import (
@@ -71,7 +70,6 @@ class PrixCarburantTool:
         filehandle, _ = urllib.request.urlretrieve(STATIONS_TARIFS_URL)
         with zipfile.ZipFile(filehandle, "r") as zip_file_object:
             with zip_file_object.open(zip_file_object.namelist()[0]) as file:
-                file_date = datetime(*zip_file_object.NameToInfo[file.name].date_time)
                 xml_content = file.read()
                 raw_content = xmltodict.parse(xml_content)
                 for station in raw_content["pdv_liste"]["pdv"]:
@@ -86,7 +84,6 @@ class PrixCarburantTool:
                                     ATTR_POSTAL_CODE: station["@cp"],
                                     ATTR_CITY: station["ville"],
                                     ATTR_NAME: "undefined",
-                                    ATTR_UPDATED_DATE: file_date,
                                     ATTR_FUELS: {},
                                 }
                             }
@@ -99,7 +96,7 @@ class PrixCarburantTool:
                                 data[station["@id"]][ATTR_FUELS].update(
                                     {
                                         fuel_info["@nom"]: {
-                                            ATTR_DATE: fuel_info["@maj"],
+                                            ATTR_UPDATED_DATE: fuel_info["@maj"],
                                             ATTR_PRICE: fuel_info["@valeur"],
                                         }
                                     }

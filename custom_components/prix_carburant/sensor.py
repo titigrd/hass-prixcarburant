@@ -162,13 +162,17 @@ class PrixCarburant(SensorEntity):
             ATTR_CITY: self.station_info[ATTR_CITY],
             ATTR_LATITUDE: self.station_info[ATTR_LATITUDE],
             ATTR_LONGITUDE: self.station_info[ATTR_LONGITUDE],
-            ATTR_UPDATED_DATE: self.station_info[ATTR_UPDATED_DATE],
+            ATTR_UPDATED_DATE: None,
         }
 
     @property
     def native_value(self):
         """Return the current price."""
-        if self.fuel in self.coordinator.data[self.station_id][ATTR_FUELS]:
-            return self.coordinator.data[self.station_id][ATTR_FUELS][self.fuel][
-                ATTR_PRICE
+        fuel = self.coordinator.data[self.station_id][ATTR_FUELS].get(self.fuel)
+        if fuel:
+            # Update date in attributes
+            self._attr_extra_state_attributes[ATTR_UPDATED_DATE] = fuel[
+                ATTR_UPDATED_DATE
             ]
+            # return price
+            return fuel[ATTR_PRICE]
