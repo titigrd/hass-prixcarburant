@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.2
+
+- Fix current fuel selected in options
+
 ## 2.2.1
 
 - Fix updated date

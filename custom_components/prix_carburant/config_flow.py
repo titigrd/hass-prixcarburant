@@ -82,17 +82,17 @@ class PrixCarburantOptionsFlowHandler(config_entries.OptionsFlow):
         options = self.config_entry.options
 
         max_km = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM))
-        filtered_fuels = options.get(CONF_FUELS, config.get(CONF_FUELS, {}))
 
         schema = {}
         if CONF_STATIONS not in config:
             schema.update({vol.Required(CONF_MAX_KM, default=max_km): int})
         for fuel in FUELS:
+            fuel_key = f"{CONF_FUELS}_{fuel}"
             schema.update(
                 {
                     vol.Required(
-                        f"{CONF_FUELS}_{fuel}",
-                        default=filtered_fuels.get(fuel, True),
+                        fuel_key,
+                        default=options.get(fuel_key, config.get(fuel_key, True)),
                     ): bool
                 }
             )
