@@ -1,7 +1,8 @@
 """Tools for Prix Carburant."""
 import csv
 import logging
-from math import asin, cos, radians, sin, sqrt
+from math import atan2, cos, radians, sin, sqrt
+from typing import Optional
 import urllib.request
 import zipfile
 
@@ -13,6 +14,7 @@ from homeassistant.util.unit_system import METRIC_SYSTEM, UnitSystem
 from .const import (
     ATTR_ADDRESS,
     ATTR_CITY,
+    ATTR_DISTANCE,
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
@@ -28,8 +30,12 @@ STATIONS_TARIFS_URL = "https://donnees.roulez-eco.fr/opendata/instantane"
 class PrixCarburantTool:
     """Prix Carburant class with stations information."""
 
-    def __init__(self):
+    def __init__(
+        self, user_latitude: float = None, user_longitude: float = None
+    ) -> None:
         """Init tool."""
+        self._user_latitude = user_latitude
+        self._user_longitude = user_longitude
         self._stations_names = {}
         self._stations_tarifs = {}
 
@@ -74,12 +80,15 @@ class PrixCarburantTool:
                 raw_content = xmltodict.parse(xml_content)
                 for station in raw_content["pdv_liste"]["pdv"]:
                     try:
+                        latitude = float(station["@latitude"]) / 100000
+                        longitude = float(station["@longitude"]) / 100000
+                        distance = self._get_distance_from_user(latitude, longitude)
                         data.update(
                             {
                                 station["@id"]: {
-                                    ATTR_LATITUDE: float(station["@latitude"]) / 100000,
-                                    ATTR_LONGITUDE: float(station["@longitude"])
-                                    / 100000,
+                                    ATTR_LATITUDE: latitude,
+                                    ATTR_LONGITUDE: longitude,
+                                    ATTR_DISTANCE: distance,
                                     ATTR_ADDRESS: station["adresse"],
                                     ATTR_POSTAL_CODE: station["@cp"],
                                     ATTR_CITY: station["ville"],
@@ -110,6 +119,16 @@ class PrixCarburantTool:
 
         self._stations_tarifs = data
 
+    def _get_distance_from_user(
+        self, latitude: float, longitude: float, units: UnitSystem = METRIC_SYSTEM
+    ) -> Optional[float]:
+        """Return the distance with user."""
+        if latitude and longitude and self._user_latitude and self._user_longitude:
+            return _get_distance(
+                self._user_longitude, self._user_latitude, longitude, latitude, units
+            )
+        return None
+
     def get_near_stations(
         self,
         latitude: float,
@@ -135,16 +154,16 @@ class PrixCarburantTool:
 
 def _get_distance(
     lon1: float, lat1: float, lon2: float, lat2: float, units: UnitSystem
-) -> int:
+) -> float:
     """Get distance from 2 locations."""
+    earth_radius = 6371 if units == METRIC_SYSTEM else 3956
+
     # convert decimal degrees to radians
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
 
     # haversine formula
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-    angle = 2 * asin(
-        sqrt(sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2)
-    )
-    earth_radius = 6371 if units == METRIC_SYSTEM else 3956
-    return int(angle * earth_radius)
+    calcul_a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    calcul_c = 2 * atan2(sqrt(calcul_a), sqrt(1 - calcul_a))
+    return round(calcul_c * earth_radius, 2)

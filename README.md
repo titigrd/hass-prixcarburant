@@ -8,7 +8,7 @@ Get fuels prices from https://www.prix-carburants.gouv.fr/
 
 ### HACS
 
-Not available for now.
+HACS > Integrations > Explore & Download Repositories > Prix Carburant > Download this repository with HACS
 
 ### Manuelle
 

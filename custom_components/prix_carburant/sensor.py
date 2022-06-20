@@ -24,6 +24,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from .const import (
     ATTR_ADDRESS,
     ATTR_CITY,
+    ATTR_DISTANCE,
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
@@ -77,7 +78,9 @@ async def async_setup_entry(
         fuel_key = f"{CONF_FUELS}_{fuel}"
         enabled_fuels[fuel] = options.get(fuel_key, config.get(fuel_key, True))
 
-    tool = await hass.async_add_executor_job(PrixCarburantTool)
+    tool = await hass.async_add_executor_job(
+        PrixCarburantTool, hass.config.latitude, hass.config.longitude
+    )
 
     async def async_update_data():
         """Fetch data from API."""
@@ -162,6 +165,7 @@ class PrixCarburant(SensorEntity):
             ATTR_CITY: self.station_info[ATTR_CITY],
             ATTR_LATITUDE: self.station_info[ATTR_LATITUDE],
             ATTR_LONGITUDE: self.station_info[ATTR_LONGITUDE],
+            ATTR_DISTANCE: self.station_info[ATTR_DISTANCE],
             ATTR_UPDATED_DATE: None,
         }
 

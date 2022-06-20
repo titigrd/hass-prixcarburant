@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.3.0
+
+- Added in HACS
+- Update distance calcul function
+- Add distance in attributes
+
 ## 2.2.2
 
 - Fix current fuel selected in options
