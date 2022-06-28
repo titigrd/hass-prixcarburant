@@ -76,9 +76,9 @@ entities:
 
 ![image](https://user-images.githubusercontent.com/44190435/176175800-64b78399-b15f-4fee-b980-6f0f010e1216.png)
 
-### Exemples de configuration d'affichage dans Home Assistant
+## Exemples de configuration d'affichage dans Home Assistant
 
-#### via carte flex-table-card
+### via carte flex-table-card
 ![image](https://user-images.githubusercontent.com/44190435/176176400-47d20078-0105-46c2-8c81-ae58e58d08f4.png)
 
 ```
@@ -107,7 +107,7 @@ css:
   tbody tr:nth-child(15): 'color: #f00020'
 style: null
 ```
-#### via carte map + auto-entities, dynamique
+### via carte map + auto-entities, dynamique
 
 ![image](https://user-images.githubusercontent.com/44190435/176176687-182eae11-7295-469e-8d43-beb951653d72.png)
 
@@ -124,7 +124,7 @@ filter:
     %}{% endif %}{%- endfor %}]
 ```
 
-#### Deux carburants, via vertical-stack + flex-table card avec graphique
+### Deux carburants, via vertical-stack + flex-table card avec graphique
 
 ![image](https://user-images.githubusercontent.com/44190435/176178283-8050928b-39bf-4046-9789-17adb4e4d0a8.png)
 
