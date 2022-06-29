@@ -1,7 +1,7 @@
 """Prix Carburant sensor platform."""
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
 
 import voluptuous as vol
@@ -24,6 +24,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from .const import (
     ATTR_ADDRESS,
     ATTR_CITY,
+    ATTR_DAYS_SINCE_LAST_UPDATE,
     ATTR_DISTANCE,
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
@@ -167,6 +168,7 @@ class PrixCarburant(SensorEntity):
             ATTR_LONGITUDE: self.station_info[ATTR_LONGITUDE],
             ATTR_DISTANCE: self.station_info[ATTR_DISTANCE],
             ATTR_UPDATED_DATE: None,
+            ATTR_DAYS_SINCE_LAST_UPDATE: None,
         }
 
     @property
@@ -178,5 +180,14 @@ class PrixCarburant(SensorEntity):
             self._attr_extra_state_attributes[ATTR_UPDATED_DATE] = fuel[
                 ATTR_UPDATED_DATE
             ]
+            try:
+                delay = datetime.now() - datetime.strptime(
+                    fuel[ATTR_UPDATED_DATE], "%Y-%m-%d %H:%M:%S"
+                )
+                self._attr_extra_state_attributes[
+                    ATTR_DAYS_SINCE_LAST_UPDATE
+                ] = delay.days
+            except ValueError:
+                _LOGGER.warning("Cannot calculate days between last update")
             # return price
             return fuel[ATTR_PRICE]

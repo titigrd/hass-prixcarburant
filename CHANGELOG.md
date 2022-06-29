@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.4.0
+
+- Add `days_since_last_update` attribute
+
 ## 2.3.0
 
 - Added in HACS
