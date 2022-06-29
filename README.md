@@ -1,6 +1,6 @@
 # Intégration Prix Carburant pour Home-Assistant
 
-![README en français](README.fr.md) :fr:
+## ![README en français](README.fr.md) :fr:
 
 Get fuels prices from https://www.prix-carburants.gouv.fr/
 
