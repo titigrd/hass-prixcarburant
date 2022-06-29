@@ -1,6 +1,6 @@
 # Intégration Prix Carburant pour Home-Assistant
 
-### [README en français](README.fr.md)
+### ==>> [README en français](README.fr.md)
 
 ### 
 
