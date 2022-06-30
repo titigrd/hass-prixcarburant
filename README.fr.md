@@ -100,10 +100,8 @@ columns:
   - name: prix
     data: state
   - name: Valid.
-    data: updated_date
-    modify: Math.round((Date.now() - Date.parse(x)) / 36000 / 100 /24)
-    align: left
-    suffix: J
+    data: days_since_last_update
+    align: right
 css:
   tbody tr:nth-child(1): 'color: #00ff00'
   tbody tr:nth-child(15): 'color: #f00020'
