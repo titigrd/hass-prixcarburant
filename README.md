@@ -2,7 +2,7 @@
 
 ==> [README complet en français](README.fr.md)
 
-## Get fuels prices from https://www.prix-carburants.gouv.fr/
+### Get intra-day updated fuel prices (instantané) from https://www.prix-carburants.gouv.fr/
 
 ## Installation
 
