@@ -12,7 +12,7 @@ Non disponible directement actuellement mais par custom repositories- / depots p
 Dans HACS, Integration cliquer sur les trois point, puis depots personnalisés
 Ajouter :
 
-- URL : https://github.com/vingerha/prixCarburant-home-assistant
+- URL : https://github.com/Aohzan/hass-prixcarburant
 - Catégorie : Intégration
 
 ### Manuelle
