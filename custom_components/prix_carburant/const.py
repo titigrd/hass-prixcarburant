@@ -8,6 +8,7 @@ PLATFORMS: Final = [Platform.SENSOR]
 
 DEFAULT_NAME: Final = "Prix Carburant"
 
+ATTR_STATION_NAME = "station_name"
 ATTR_ADDRESS = "address"
 ATTR_POSTAL_CODE = "postal_code"
 ATTR_CITY = "city"

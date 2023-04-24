@@ -23,6 +23,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
     ATTR_ADDRESS,
+    ATTR_STATION_NAME,
     ATTR_CITY,
     ATTR_DAYS_SINCE_LAST_UPDATE,
     ATTR_DISTANCE,
@@ -160,6 +161,7 @@ class PrixCarburant(SensorEntity):
             configuration_url="https://www.prix-carburants.gouv.fr/",
         )
         self._attr_extra_state_attributes = {
+            ATTR_STATION_NAME: self.station_info[ATTR_NAME],
             ATTR_NAME: self.station_info[ATTR_NAME],
             ATTR_ADDRESS: self.station_info[ATTR_ADDRESS],
             ATTR_POSTAL_CODE: self.station_info[ATTR_POSTAL_CODE],
