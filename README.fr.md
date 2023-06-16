@@ -107,6 +107,46 @@ css:
   tbody tr:nth-child(15): 'color: #f00020'
 style: null
 ```
+### via carte flex-table-card avec logo
+![image](https://github.com/Aohzan/hass-prixcarburant/assets/44190435/eeb73a1d-13a1-486d-aeed-ff225c201295)
+```
+type: custom:flex-table-card
+sort_by: state+
+clickable: true
+entities:
+  include:
+    - sensor.station_carrefour_market_sp95
+    - sensor.station_geant_casino_e10_2
+    - sensor.station_intermarche_e10
+    - sensor.station_relais_rond_point_j_rose_e10
+columns:
+  - data: entity_picture
+    align: center
+    icon: mdi:gas-station
+    modify: '''<img src="'' + x + ''"style="height: 35px">'''
+  - data: name
+    name: ' Stations Le Creusot'
+    align: left
+  - icon: mdi:currency-eur
+    data: state
+    align: center
+  - icon: mdi:calendar-clock
+    data: days_since_last_update
+    align: center
+    prefix: J+
+css:
+  tbody tr:nth-child(odd): 'background-color: rgba(255, 255, 255, 0.2)'
+  tbody tr:nth-child(even): 'background-color: rgba(255, 255, 255, 0.1)'
+  tbody tr:nth-child(1): 'color: #00C62D; font-weight: bold'
+  tbody tr:nth-child(4): 'color: #dd2c00'
+card_mod: null
+style: |
+  :host {
+    font-size: 18px;
+    border-radius: 10px;
+  }
+```
+
 
 ### via carte map + auto-entities, dynamique
 
