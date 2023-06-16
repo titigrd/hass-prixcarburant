@@ -108,6 +108,11 @@ css:
 style: null
 ```
 ### via carte flex-table-card avec logo
+Préparations:
+- Créer des icônes et les placer dans un dossier après « /www/ »
+- Customize chaque entité dans configuration.yaml ou votre autre yaml quit tien les customizations
+- optionel: Modifier le nom des entités pour éviter les noms de stations trop longs
+
 ![image](https://github.com/Aohzan/hass-prixcarburant/assets/44190435/eeb73a1d-13a1-486d-aeed-ff225c201295)
 ```
 type: custom:flex-table-card
