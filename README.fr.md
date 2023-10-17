@@ -109,8 +109,17 @@ style: null
 ```
 ### via carte flex-table-card avec logo
 Préparations:
-- Créer des icônes et les placer dans un dossier après « /www/ »
-- Customize chaque entité dans configuration.yaml ou votre autre yaml quit tien les customizations
+- Pour rajouter les logos, utiliser File Editor, puis aller dans le dossier www, enfin créer un sous-dossier nommé « logos » par exemple. Dans ce dossier, vous devez charger les différents images representant les logos de vos stations service
+- Puis éditer le fichier configuration.yaml, et rajouter et adapter pour chacune de vos stations (exemple ci-dessous avec 2 stations en gazole) :
+```
+homeassistant:
+customize:
+sensor.station_exemple1_gazole:
+entity_picture: /local/logos/carrefour.png
+sensor.station_exemple2_gazole:
+entity_picture: /local/logos/auchan.png
+```
+Enfin utiliser l’exemple de card comme ci-dessous
 - optionel: Modifier le nom des entités pour éviter les noms de stations trop longs
 
 ![image](https://github.com/Aohzan/hass-prixcarburant/assets/44190435/eeb73a1d-13a1-486d-aeed-ff225c201295)
