@@ -19,6 +19,7 @@ ATTR_DAYS_SINCE_LAST_UPDATE = "days_since_last_update"
 ATTR_PRICE = "price"
 CONF_MAX_KM = "max_km"
 CONF_FUELS = "fuels"
+CONF_STATIONS = "stations"
 
 ATTR_GAZOLE = "Gazole"
 ATTR_SP95 = "SP95"

@@ -23,6 +23,17 @@ Copy the directory `prix_carburant` in `config/custom_components` of your Home-A
 
 Search `Prix Carburant` in Integration.
 
+### From configuration.yaml
+
+```yaml
+sensor:
+    - platform: prix_carburant
+    # IDs from https://www.prix-carburants.gouv.fr/
+    stations:
+        - 12345678
+        - 34567890
+```
+
 ## Crédits
 
 Thanks to https://github.com/max5962/prixCarburant-home-assistant for base code.

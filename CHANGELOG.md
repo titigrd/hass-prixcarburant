@@ -3,9 +3,10 @@
 ## 3.0.0
 
 - Migrate to the last gouv API (v2.1) : fastest update as only nearest fuel station are updated
-- Store stations name/brand in local to allow update from community
-- Remove yaml configuration
+- Store stations name/brand in local file to allow update from community
+- Restrict yaml configuration to static list only
 - Add `brand` atribute
+- Add entity pictures
 
 ## 2.5.0
 

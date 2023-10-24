@@ -31,20 +31,23 @@ class PrixCarburantTool:
 
     def __init__(
         self,
-        user_latitude: float,
-        user_longitude: float,
-        user_range: int,
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
         session: ClientSession | None = None,
     ) -> None:
         """Init tool."""
-        self._user_latitude = user_latitude
-        self._user_longitude = user_longitude
-        self._user_range = user_range
         self._user_time_zone = time_zone
         self._stations_names: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
+
+        _LOGGER.debug("Load stations names from local file %s", STATIONS_NAME_FILE)
+        with open(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
+            ),
+            encoding="UTF-8",
+        ) as file:
+            self._stations_names = json.load(file)
 
         self._request_timeout = request_timeout
         self._session = session
@@ -94,23 +97,45 @@ class PrixCarburantTool:
                 "Error occurred while communicating with the Prix Carburant API."
             ) from exception
 
-    async def init_stations_data(self) -> None:
-        """Get data from all stations."""
-        _LOGGER.debug("load stations names from: %s", STATIONS_NAME_FILE)
-        with open(
-            os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
-            ),
-            encoding="UTF-8",
-        ) as file:
-            self._stations_names = json.load(file)
-
+    async def init_stations_from_list(self, stations_ids: list[int]) -> None:
+        """Get data from station list ID."""
         data = {}
-        _LOGGER.debug("call %s API for station data retrieval", PRIX_CARBURANT_API_URL)
+        _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
+
+        for station_id in stations_ids:
+            _LOGGER.debug(
+                "Search station ID %s",
+                station_id,
+            )
+            response = await self._request_api(
+                {
+                    "select": "id,latitude,longitude,cp,adresse,ville",
+                    "where": f"id={station_id}",
+                    "limit": 1,
+                }
+            )
+            if response["total_count"] != 1:
+                _LOGGER.error(
+                    "%s stations returned, must be 1", response["total_count"]
+                )
+                continue
+            data.update(self._build_station_data(response["results"][0]))
+
+        self._stations_data = data
+
+    async def init_stations_from_location(
+        self,
+        user_latitude: float,
+        user_longitude: float,
+        user_range: int,
+    ) -> None:
+        """Get data from near stations."""
+        data = {}
+        _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
         response_count = await self._request_api(
             {
                 "select": "id",
-                "where": f"distance(geom, geom'POINT({self._user_longitude} {self._user_latitude})', {self._user_range}km)",
+                "where": f"distance(geom, geom'POINT({user_longitude} {user_latitude})', {user_range}km)",
                 "limit": 1,
             }
         )
@@ -124,7 +149,7 @@ class PrixCarburantTool:
                 else stations_count - query_offset
             )
             _LOGGER.debug(
-                "query stations from %s to %s/%s",
+                "Query stations from %s to %s/%s",
                 query_offset,
                 query_limit,
                 stations_count,
@@ -133,62 +158,28 @@ class PrixCarburantTool:
                 response = await self._request_api(
                     {
                         "select": "id,latitude,longitude,cp,adresse,ville",
-                        "where": f"distance(geom, geom'POINT({self._user_longitude} {self._user_latitude})', {self._user_range}km)",
+                        "where": f"distance(geom, geom'POINT({user_longitude} {user_latitude})', {user_range}km)",
                         "offset": query_offset,
                         "limit": query_limit,
                     }
                 )
             for station in response["results"]:
-                try:
-                    data.update(
-                        {
-                            station["id"]: {
-                                ATTR_LATITUDE: float(station["latitude"]) / 100000,
-                                ATTR_LONGITUDE: float(station["longitude"]) / 100000,
-                                ATTR_ADDRESS: station["adresse"],
-                                ATTR_POSTAL_CODE: station["cp"],
-                                ATTR_CITY: station["ville"],
-                                ATTR_NAME: "undefined",
-                                ATTR_BRAND: None,
-                                ATTR_FUELS: {},
-                            }
-                        }
-                    )
-                    # add station name if existing in local data
-                    if str(station["id"]) in self._stations_names:
-                        data[station["id"]][ATTR_NAME] = (
-                            str(self._stations_names[str(station["id"])]["Nom"])
-                            .title()
-                            .replace("Station ", "")
-                        )
-                        data[station["id"]][ATTR_BRAND] = str(
-                            self._stations_names[str(station["id"])]["Marque"]
-                        ).title()
-
-                except (KeyError, TypeError) as error:
-                    _LOGGER.error(
-                        "Error while getting station %s information: %s",
-                        station.get("id", "no ID"),
-                        error,
-                    )
+                data.update(self._build_station_data(station))
 
         self._stations_data = data
 
     async def update_stations_prices(self) -> None:
-        """Update tarifs of specified stations."""
-        _LOGGER.debug("call %s API for station data retrieval", PRIX_CARBURANT_API_URL)
+        """Update prices of specified stations."""
+        _LOGGER.debug("Call %s API to retrieve fuel prices", PRIX_CARBURANT_API_URL)
+        query_select = ",".join(
+            [f"{f.lower()}_prix" for f in FUELS] + [f"{f.lower()}_maj" for f in FUELS]
+        )
         for station_id, station_data in self._stations_data.items():
             _LOGGER.debug(
                 "Update fuel prices for station id %s: %s",
                 station_id,
                 station_data[ATTR_NAME],
             )
-
-            query_select = ",".join(
-                [f"{f.lower()}_prix" for f in FUELS]
-                + [f"{f.lower()}_maj" for f in FUELS]
-            )
-
             response = await self._request_api(
                 {
                     "select": query_select,
@@ -213,6 +204,41 @@ class PrixCarburantTool:
                             }
                         }
                     )
+
+    def _build_station_data(self, station: dict) -> dict:
+        data = {}
+        try:
+            data.update(
+                {
+                    station["id"]: {
+                        ATTR_LATITUDE: float(station["latitude"]) / 100000,
+                        ATTR_LONGITUDE: float(station["longitude"]) / 100000,
+                        ATTR_ADDRESS: station["adresse"],
+                        ATTR_POSTAL_CODE: station["cp"],
+                        ATTR_CITY: station["ville"],
+                        ATTR_NAME: "undefined",
+                        ATTR_BRAND: None,
+                        ATTR_FUELS: {},
+                    }
+                }
+            )
+            # add station name if existing in local data
+            if str(station["id"]) in self._stations_names:
+                data[station["id"]][ATTR_NAME] = (
+                    str(self._stations_names[str(station["id"])]["Nom"])
+                    .title()
+                    .replace("Station ", "")
+                )
+                data[station["id"]][ATTR_BRAND] = str(
+                    self._stations_names[str(station["id"])]["Marque"]
+                ).title()
+        except (KeyError, TypeError) as error:
+            _LOGGER.error(
+                "Error while getting station %s information: %s",
+                station.get("id", "no ID"),
+                error,
+            )
+        return data
 
 
 class PrixCarburantToolCannotConnectError(Exception):

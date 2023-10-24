@@ -18,13 +18,48 @@ Copier le dossier `prix_carburant` dans le dossier `config/custom_components` de
 
 Ajoutez une nouvelle intégration, recherchez `Prix Carburant` et remplissez les champs demandés.
 
+### via configuration.yml
+
+Récupérer l'ID des stations voulues sur https://www.prix-carburants.gouv.fr/. Pour cela chercher la station, cliquer sur le logo station sur la carte, passer le curseur sur `Voir plan` et noter le numéro qui apparait en bas de votre navigateur. Exemple avec Firefox :
+
+![Récupération d'ID avec Firefox](readme_firefoxid.png)
+
+Puis dans le fichier configuration.yaml, mettre par exemple :
+
+```yaml
+sensor:
+  platform: prix_carburant
+  stations:
+    - 59000009
+    - 59000080
+```
+
 ### Exemple de données extraites
 
-![image](https://user-images.githubusercontent.com/44190435/176175800-64b78399-b15f-4fee-b980-6f0f010e1216.png)
+`Station Carrefour Market La Poterie E10` - `sensor.station_carrefour_market_la_poterie_e10`:
 
-## Nom des stations
+```yaml
+value: 1.808
+name: Carrefour Market La Poterie
+brand: Carrefour Market
+address: Boulevard Paul Hutin Desgrées
+postal_code: 35200
+city: Rennes
+latitude: 48.091297777798
+longitude: -1.6418527606305
+updated_date: 2023-10-24 09:51:21
+days_since_last_update: 0
+unit_of_measurement: €
+device_class: monetary
+icon: mdi:gas-station
+friendly_name: Station Carrefour Market La Poterie E10
+```
+
+## Nom et logo des stations
 
 Si le nom d'une station n'apparait pas, vous pouvez contribuer en ajoutant les informations dans [le fichier stations_name.json](./custom_components/prix_carburant/stations_name.json).
+
+Pour le logo [sensor.py](custom_components/prix_carburant/sensor.py), après `match self.station_info[ATTR_BRAND]:`.
 
 ## Exemples de configuration d'affichage dans Home Assistant
 

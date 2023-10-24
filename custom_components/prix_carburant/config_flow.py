@@ -9,15 +9,24 @@ from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_FUELS, CONF_MAX_KM, DEFAULT_MAX_KM, DEFAULT_NAME, DOMAIN, FUELS
+from .const import (
+    CONF_FUELS,
+    CONF_MAX_KM,
+    CONF_STATIONS,
+    DEFAULT_MAX_KM,
+    DEFAULT_NAME,
+    DOMAIN,
+    FUELS,
+)
 
 
 def _build_schema(config: Mapping, options: Mapping) -> vol.Schema:
     """Build schema according to config/options."""
-    max_km = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM, DEFAULT_MAX_KM))
-    schema = {
-        vol.Required(CONF_MAX_KM, default=max_km): int,
-    }
+
+    schema = {}
+    if CONF_STATIONS not in config:
+        max_km = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM, DEFAULT_MAX_KM))
+        schema.update({vol.Required(CONF_MAX_KM, default=max_km): int})
     for fuel in FUELS:
         fuel_key = f"{CONF_FUELS}_{fuel}"
         schema.update(
@@ -35,6 +44,16 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for Prix Carburant."""
 
     VERSION = 1
+
+    async def async_step_import(self, import_info) -> FlowResult:
+        """Import a config entry from YAML config."""
+        entry = await self.async_set_unique_id(DOMAIN)
+
+        if entry:
+            self.hass.config_entries.async_update_entry(entry, data=import_info)
+            self._abort_if_unique_id_configured()
+
+        return self.async_create_entry(title=DEFAULT_NAME, data=import_info)
 
     async def async_step_user(self, user_input=None) -> FlowResult:
         """Get configuration from the user."""
