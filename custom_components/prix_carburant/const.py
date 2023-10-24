@@ -7,17 +7,16 @@ DOMAIN: Final = "prix_carburant"
 PLATFORMS: Final = [Platform.SENSOR]
 
 DEFAULT_NAME: Final = "Prix Carburant"
+DEFAULT_MAX_KM: Final = 15
 
-ATTR_STATION_NAME = "station_name"
 ATTR_ADDRESS = "address"
 ATTR_POSTAL_CODE = "postal_code"
+ATTR_BRAND = "brand"
 ATTR_CITY = "city"
 ATTR_FUELS = "fuels"
-ATTR_DISTANCE = "distance"
 ATTR_UPDATED_DATE = "updated_date"
 ATTR_DAYS_SINCE_LAST_UPDATE = "days_since_last_update"
 ATTR_PRICE = "price"
-CONF_STATIONS = "stations"
 CONF_MAX_KM = "max_km"
 CONF_FUELS = "fuels"
 

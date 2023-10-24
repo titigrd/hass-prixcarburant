@@ -1,19 +1,12 @@
 # Intégration Prix Carburant pour Home-Assistant
 
-Récupération du prix des carburant selon les données de https://www.prix-carburants.gouv.fr/
-Via une distance maximum du domicile (localisation renseignée dans Home-Assistant) ou via une liste d'ID.
+Récupération du prix des carburant selon les données de l'[API gouvernementale](https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/table/).
 
 ## Installation
 
 ### HACS
 
-Non disponible directement actuellement mais par custom repositories- / depots personnalisés
-
-Dans HACS, Integration cliquer sur les trois point, puis depots personnalisés
-Ajouter :
-
-- URL : https://github.com/Aohzan/hass-prixcarburant
-- Catégorie : Intégration
+HACS > Integrations > Explorer et télécharger des dépôts > Prix Carburant > Télécharger
 
 ### Manuelle
 
@@ -25,35 +18,17 @@ Copier le dossier `prix_carburant` dans le dossier `config/custom_components` de
 
 Ajoutez une nouvelle intégration, recherchez `Prix Carburant` et remplissez les champs demandés.
 
-### via configuration.yml
+### Exemple de données extraites
 
-#### A partir de la localisation Home-Assistant
+![image](https://user-images.githubusercontent.com/44190435/176175800-64b78399-b15f-4fee-b980-6f0f010e1216.png)
 
-Indiquez une distance maximale via `max_km`, par exemple:
+## Nom des stations
 
-```yaml
-sensor:
-  platform: prix_carburant
-  max_km: 10
-```
+Si le nom d'une station n'apparait pas, vous pouvez contribuer en ajoutant les informations dans [le fichier stations_name.json](./custom_components/prix_carburant/stations_name.json).
 
-#### A partir d'une liste d'ID
+## Exemples de configuration d'affichage dans Home Assistant
 
-Récupérer l'ID des stations voulues sur https://www.prix-carburants.gouv.fr/. Pour cela chercher la station, cliquer sur le logo station sur la carte, passer le curseur sur `Voir plan` et noter le numéro qui apparait en bas de votre navigateur. Exemple avec Firefox :
-
-![Récupération d'ID avec Firefox](readme_firefoxid.png)
-
-Puis dans le fichier configuration.yaml, mettre par exemple :
-
-```yaml
-sensor:
-  platform: prix_carburant
-  stations:
-    - 59000009
-    - 59000080
-```
-
-## Dashboard
+### via carte multiple-entity-row
 
 Exemple de configuration avec [multiple-entity-row](https://github.com/benct/lovelace-multiple-entity-row):
 
@@ -72,12 +47,6 @@ entities:
       - entity: sensor.station_mastation_sp98
         name: SP98
 ```
-
-### Exemple de données extraites
-
-![image](https://user-images.githubusercontent.com/44190435/176175800-64b78399-b15f-4fee-b980-6f0f010e1216.png)
-
-## Exemples de configuration d'affichage dans Home Assistant
 
 ### via carte flex-table-card
 
@@ -107,11 +76,15 @@ css:
   tbody tr:nth-child(15): 'color: #f00020'
 style: null
 ```
+
 ### via carte flex-table-card avec logo
+
 Préparations:
+
 - Pour rajouter les logos, utiliser File Editor, puis aller dans le dossier www, enfin créer un sous-dossier nommé « logos » par exemple. Dans ce dossier, vous devez charger les différents images representant les logos de vos stations service
 - Puis éditer le fichier configuration.yaml, et rajouter et adapter pour chacune de vos stations (exemple ci-dessous avec 2 stations en gazole)
-```
+
+```yaml
 homeassistant:
   customize:
     sensor.station_exemple1_gazole:
@@ -119,11 +92,14 @@ homeassistant:
     sensor.station_exemple2_gazole:
     entity_picture: /local/logos/auchan.png
 ```
+
 Enfin utiliser l’exemple de card comme ci-dessous
+
 - optionel: Modifier le nom des entités pour éviter les noms de stations trop longs
 
 ![image](https://github.com/Aohzan/hass-prixcarburant/assets/44190435/eeb73a1d-13a1-486d-aeed-ff225c201295)
-```
+
+```yaml
 type: custom:flex-table-card
 sort_by: state+
 clickable: true
@@ -160,7 +136,6 @@ style: |
     border-radius: 10px;
   }
 ```
-
 
 ### via carte map + auto-entities, dynamique
 
@@ -263,9 +238,5 @@ card_mod:
      --ha-card-background: rgba(0, 0, 0, 0.1);
     ha-card {
       margin-top: 0em;
-        }         
+        }
 ```
-
-## Crédits
-
-Merci à https://github.com/max5962/prixCarburant-home-assistant

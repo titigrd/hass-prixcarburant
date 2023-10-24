@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 3.0.0
+
+- Migrate to the last gouv API (v2.1) : fastest update as only nearest fuel station are updated
+- Store stations name/brand in local to allow update from community
+- Remove yaml configuration
+- Add `brand` atribute
+
 ## 2.5.0
 
 - Replace `async_setup_platforms` deprecated method
