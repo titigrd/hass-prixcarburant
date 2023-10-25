@@ -2,6 +2,7 @@
 from asyncio import timeout
 import json
 import logging
+from math import atan2, cos, radians, sin, sqrt
 import os
 from socket import gaierror
 
@@ -13,6 +14,7 @@ from .const import (
     ATTR_ADDRESS,
     ATTR_BRAND,
     ATTR_CITY,
+    ATTR_DISTANCE,
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
@@ -97,7 +99,9 @@ class PrixCarburantTool:
                 "Error occurred while communicating with the Prix Carburant API."
             ) from exception
 
-    async def init_stations_from_list(self, stations_ids: list[int]) -> None:
+    async def init_stations_from_list(
+        self, stations_ids: list[int], latitude: float, longitude: float
+    ) -> None:
         """Get data from station list ID."""
         data = {}
         _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
@@ -119,7 +123,13 @@ class PrixCarburantTool:
                     "%s stations returned, must be 1", response["total_count"]
                 )
                 continue
-            data.update(self._build_station_data(response["results"][0]))
+            data.update(
+                self._build_station_data(
+                    response["results"][0],
+                    user_latitude=latitude,
+                    user_longitude=longitude,
+                )
+            )
 
         self._stations_data = data
 
@@ -164,7 +174,11 @@ class PrixCarburantTool:
                     }
                 )
             for station in response["results"]:
-                data.update(self._build_station_data(station))
+                data.update(
+                    self._build_station_data(
+                        station, user_longitude=longitude, user_latitude=latitude
+                    )
+                )
 
         self._stations_data = data
 
@@ -206,7 +220,7 @@ class PrixCarburantTool:
                     )
 
     async def find_nearest_station(
-        self, longitude: str, latitude: str, fuel: str, distance: int = 10
+        self, longitude: float, latitude: float, fuel: str, distance: int = 10
     ) -> dict:
         """Return stations near the location where the fuel price is the lowest."""
         data = {}
@@ -226,17 +240,38 @@ class PrixCarburantTool:
         _LOGGER.debug("%s stations returned by the API", stations_count)
 
         for station in response["results"]:
-            data.update(self._build_station_data(station, f"{fuel.lower()}_prix"))
+            data.update(
+                self._build_station_data(
+                    station,
+                    user_longitude=longitude,
+                    user_latitude=latitude,
+                    fuel_key=f"{fuel.lower()}_prix",
+                )
+            )
         return data
 
-    def _build_station_data(self, station: dict, fuel_key: str | None = None) -> dict:
+    def _build_station_data(
+        self,
+        station: dict,
+        user_longitude: float | None = None,
+        user_latitude: float | None = None,
+        fuel_key: str | None = None,
+    ) -> dict:
         data = {}
         try:
+            latitude = float(station["latitude"]) / 100000
+            longitude = float(station["longitude"]) / 100000
+            distance = (
+                _get_distance(longitude, latitude, user_longitude, user_latitude)
+                if user_longitude and user_latitude
+                else None
+            )
             data.update(
                 {
                     station["id"]: {
-                        ATTR_LATITUDE: float(station["latitude"]) / 100000,
-                        ATTR_LONGITUDE: float(station["longitude"]) / 100000,
+                        ATTR_LATITUDE: latitude,
+                        ATTR_LONGITUDE: longitude,
+                        ATTR_DISTANCE: distance,
                         ATTR_ADDRESS: station["adresse"],
                         ATTR_POSTAL_CODE: station["cp"],
                         ATTR_CITY: station["ville"],
@@ -266,6 +301,21 @@ class PrixCarburantTool:
                 error,
             )
         return data
+
+
+def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
+    """Get distance from 2 locations."""
+    earth_radius = 6371
+
+    # convert decimal degrees to radians
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    calcul_a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    calcul_c = 2 * atan2(sqrt(calcul_a), sqrt(1 - calcul_a))
+    return round(calcul_c * earth_radius, 2)
 
 
 class PrixCarburantToolCannotConnectError(Exception):

@@ -43,7 +43,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # yaml configuration
     if CONF_STATIONS in config:
         _LOGGER.info("Init stations data from yaml list")
-        await tool.init_stations_from_list(config[CONF_STATIONS])
+        await tool.init_stations_from_list(
+            stations_ids=config[CONF_STATIONS],
+            latitude=hass.config.latitude,
+            longitude=hass.config.longitude,
+        )
     # ui configuration
     else:
         _LOGGER.info("Init stations list near Home-Assistant location")
