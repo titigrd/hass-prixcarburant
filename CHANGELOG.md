@@ -7,6 +7,8 @@
 - Restrict yaml configuration to static list only
 - Add `brand` atribute
 - Add entity pictures
+- Add `button.prix_carburant_refresh_prices` entity to ask to refresh prices
+- Add `prix_carburant.find_nearest_stations` service "Prix Carburant: Trouver les stations proches"
 
 ## 2.5.0
 

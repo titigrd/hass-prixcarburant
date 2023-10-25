@@ -4,7 +4,7 @@ from typing import Final
 from homeassistant.const import Platform
 
 DOMAIN: Final = "prix_carburant"
-PLATFORMS: Final = [Platform.SENSOR]
+PLATFORMS: Final = [Platform.SENSOR, Platform.BUTTON]
 
 DEFAULT_NAME: Final = "Prix Carburant"
 DEFAULT_MAX_KM: Final = 15

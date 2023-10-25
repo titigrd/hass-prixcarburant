@@ -2,6 +2,10 @@
 
 Récupération du prix des carburant selon les données de l'[API gouvernementale](https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/table/).
 
+Récupère les stations à x kilomètres de votre domicile (ou via une liste définie si utilisation de `configuration.yaml`).
+Rafraîchissement des données toutes les heures, il est possible de lancer un rafraîchissement manuel via l'entité `button`.
+Un service est mis à disposition pour trouver le meilleur prix d'un carburant donné autour de soi ou de n'importe quelle entité possédant une localisation (`device_tracker`, `person`, `sensor`...).
+
 ## Installation
 
 ### HACS
@@ -20,7 +24,7 @@ Ajoutez une nouvelle intégration, recherchez `Prix Carburant` et remplissez les
 
 ### via configuration.yml
 
-Récupérer l'ID des stations voulues sur https://www.prix-carburants.gouv.fr/. Pour cela chercher la station, cliquer sur le logo station sur la carte, passer le curseur sur `Voir plan` et noter le numéro qui apparait en bas de votre navigateur. Exemple avec Firefox :
+Récupérer l'ID des stations voulues sur <https://www.prix-carburants.gouv.fr/>. Pour cela chercher la station, cliquer sur le logo station sur la carte, passer le curseur sur `Voir plan` et noter le numéro qui apparait en bas de votre navigateur. Exemple avec Firefox :
 
 ![Récupération d'ID avec Firefox](readme_firefoxid.png)
 

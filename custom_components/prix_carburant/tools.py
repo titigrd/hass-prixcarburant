@@ -125,9 +125,9 @@ class PrixCarburantTool:
 
     async def init_stations_from_location(
         self,
-        user_latitude: float,
-        user_longitude: float,
-        user_range: int,
+        latitude: float,
+        longitude: float,
+        distance: int,
     ) -> None:
         """Get data from near stations."""
         data = {}
@@ -135,7 +135,7 @@ class PrixCarburantTool:
         response_count = await self._request_api(
             {
                 "select": "id",
-                "where": f"distance(geom, geom'POINT({user_longitude} {user_latitude})', {user_range}km)",
+                "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                 "limit": 1,
             }
         )
@@ -158,7 +158,7 @@ class PrixCarburantTool:
                 response = await self._request_api(
                     {
                         "select": "id,latitude,longitude,cp,adresse,ville",
-                        "where": f"distance(geom, geom'POINT({user_longitude} {user_latitude})', {user_range}km)",
+                        "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                         "offset": query_offset,
                         "limit": query_limit,
                     }
@@ -205,7 +205,30 @@ class PrixCarburantTool:
                         }
                     )
 
-    def _build_station_data(self, station: dict) -> dict:
+    async def find_nearest_station(
+        self, longitude: str, latitude: str, fuel: str, distance: int = 10
+    ) -> dict:
+        data = {}
+        _LOGGER.debug(
+            "Call %s API to retrieve nearest stations ordered by price",
+            PRIX_CARBURANT_API_URL,
+        )
+        response = await self._request_api(
+            {
+                "select": f"id,latitude,longitude,cp,adresse,ville,{fuel.lower()}_prix,{fuel.lower()}_maj",
+                "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
+                "order_by": f"{fuel.lower()}_prix",
+                "limit": 10,
+            }
+        )
+        stations_count = response["total_count"]
+        _LOGGER.debug("%s stations returned by the API", stations_count)
+
+        for station in response["results"]:
+            data.update(self._build_station_data(station, f"{fuel.lower()}_prix"))
+        return data
+
+    def _build_station_data(self, station: dict, fuel_key: str | None = None) -> dict:
         data = {}
         try:
             data.update(
@@ -222,6 +245,9 @@ class PrixCarburantTool:
                     }
                 }
             )
+            # add fuel price if fuel key specified
+            if fuel_key:
+                data[station["id"]][ATTR_PRICE] = station[fuel_key]
             # add station name if existing in local data
             if str(station["id"]) in self._stations_names:
                 data[station["id"]][ATTR_NAME] = (
