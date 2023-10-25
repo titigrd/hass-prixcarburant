@@ -1,9 +1,9 @@
 """Prix Carburant integration."""
 from datetime import timedelta
+import logging
 
-from homeassistant.const import ATTR_NAME
-from .tools import PrixCarburantTool
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_NAME
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,
@@ -14,7 +14,6 @@ from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-import logging
 from .const import (
     ATTR_ADDRESS,
     ATTR_CITY,
@@ -25,6 +24,7 @@ from .const import (
     DOMAIN,
     PLATFORMS,
 )
+from .tools import PrixCarburantTool
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await tool.init_stations_from_location(
             latitude=hass.config.latitude,
             longitude=hass.config.longitude,
-            user_range=max_distance,
+            distance=max_distance,
         )
         _LOGGER.info("%s stations found", str(len(tool.stations)))
 
@@ -83,6 +83,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         distance = call.data["distance"]
         entity_id = call.data["entity_id"]
         entity = hass.states.get(entity_id)
+        if not entity:
+            raise HomeAssistantError("The entity specified was not found")
         entity_longitude = entity.attributes.get("longitude")
         entity_latitude = entity.attributes.get("latitude")
         if not entity_longitude and not entity_latitude:
@@ -96,7 +98,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "stations": [
                 {
                     "name": station_data[ATTR_NAME],
-                    "price": float(station_data[ATTR_PRICE]),
+                    "price": station_data.get(ATTR_PRICE),
                     "address": f"{station_data[ATTR_ADDRESS]}, {station_data[ATTR_POSTAL_CODE]} {station_data[ATTR_CITY]}",
                 }
                 for station_id, station_data in stations.items()

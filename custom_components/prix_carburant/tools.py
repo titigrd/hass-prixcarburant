@@ -208,6 +208,7 @@ class PrixCarburantTool:
     async def find_nearest_station(
         self, longitude: str, latitude: str, fuel: str, distance: int = 10
     ) -> dict:
+        """Return stations near the location where the fuel price is the lowest."""
         data = {}
         _LOGGER.debug(
             "Call %s API to retrieve nearest stations ordered by price",
