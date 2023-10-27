@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.1.0
+
+- Add Auchan logo
+
 ## 3.0.0
 
 - Migrate to the last gouv API (v2.1) : fastest update as only nearest fuel station are updated
