@@ -115,6 +115,7 @@ class PrixCarburant(SensorEntity):
             case "Système U":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
             case "Total":
+            case "Elan":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
             case "Total Access":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
@@ -124,8 +125,20 @@ class PrixCarburant(SensorEntity):
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
             case "Carrefour":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Carrefour_logo.svg"
+            case "Carrefour Contact":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3a/Logo_Carrefour_Contact_-_2016.svg"
             case "Carrefour Market":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
+            case "Supermarchés Spar":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Spar-logo.svg"
+            case "Shell":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
+            case "Super Casino":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/57/GroupeCasino.svg"
+            case "Géant":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/57/GroupeCasino.svg"
+            case "Esso Express":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Esso-Logo.svg/320px-Esso-Logo.svg.png"
             case "Auchan":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
 
