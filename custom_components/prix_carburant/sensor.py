@@ -138,7 +138,10 @@ class PrixCarburant(SensorEntity):
             case "Géant":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/57/GroupeCasino.svg"
             case "Esso Express":
+            case "Esso":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Esso-Logo.svg/320px-Esso-Logo.svg.png"
+            case "Avia":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
             case "Auchan":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
 
