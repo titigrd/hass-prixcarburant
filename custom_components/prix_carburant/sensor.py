@@ -136,8 +136,7 @@ class PrixCarburant(SensorEntity):
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
             case "Carrefour":	 
             case "Carrefour Contact":	
-            case "Carrefour Express":	
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/8/8d/Carrefour_%28Unternehmen%29_2021_logo.svg"
+            case "Carrefour Express":
             case "Carrefour Market":	 
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
             case "Avia":	 
@@ -173,7 +172,6 @@ class PrixCarburant(SensorEntity):
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
             case "Total":	 
             case "Total Access":	
-            case "Elan":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
 
         self._attr_device_info = DeviceInfo(
