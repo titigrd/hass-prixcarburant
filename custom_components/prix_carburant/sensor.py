@@ -1,7 +1,7 @@
 """Prix Carburant sensor platform."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 import logging
 
 import voluptuous as vol
@@ -206,14 +206,18 @@ class PrixCarburant(SensorEntity):
                 ATTR_UPDATED_DATE
             ]
             try:
-                delay = datetime.now() - datetime.strptime(
-                    fuel[ATTR_UPDATED_DATE], "%Y-%m-%d %H:%M:%S"
+                delay = datetime.now(tz=UTC) - datetime.strptime(
+                    fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
                 )
                 self._attr_extra_state_attributes[
                     ATTR_DAYS_SINCE_LAST_UPDATE
                 ] = delay.days
-            except ValueError:
-                _LOGGER.warning("Cannot calculate days between last update")
+            except ValueError as err:
+                _LOGGER.warning(
+                    "Cannot calculate days for %s since last update: %s",
+                    self._attr_name,
+                    err,
+                )
             # return price
             return float(fuel[ATTR_PRICE])
         return None

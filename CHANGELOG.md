@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.1.1
+
+- Fix the since days calculation
+
 ## 3.1.0
 
 - Add Auchan logo
