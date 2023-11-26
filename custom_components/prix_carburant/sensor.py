@@ -112,38 +112,69 @@ class PrixCarburant(SensorEntity):
         self._attr_name = f"{station_name} {self.fuel}"
 
         match self.station_info[ATTR_BRAND]:
-            case "Système U":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-            case "Total":
-            case "Elan":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-            case "Total Access":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-            case "Intermarché":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/8/8c/Logo_Groupe_Les_Mousquetaires.svg"
-            case "Leclerc":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
-            case "Carrefour":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Carrefour_logo.svg"
-            case "Carrefour Contact":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3a/Logo_Carrefour_Contact_-_2016.svg"
-            case "Carrefour Market":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
-            case "Supermarchés Spar":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Spar-logo.svg"
-            case "Shell":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
-            case "Super Casino":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/57/GroupeCasino.svg"
-            case "Géant":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/57/GroupeCasino.svg"
+            case "Monoprix":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg"
             case "Esso Express":
             case "Esso":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Esso-Logo.svg/320px-Esso-Logo.svg.png"
-            case "Avia":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
-            case "Auchan":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/0/0e/Esso-Logo.svg"
+            case "Aldi":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg"
+            case "Géant":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
+            case "Weldom":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4b/Logo_weldom.png"
+            case "Auchan":	 
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
+            case "Intermarché":	 
+            case "Intermarché Contact":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/66/Intermarch%C3%A9_logo_2017.svg"
+            case "Casino":	 
+            case "Super Casino":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
+            case "SPAR":	 
+            case "SPAR STATION":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
+            case "Carrefour":	 
+            case "Carrefour Contact":	
+            case "Carrefour Express":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/8/8d/Carrefour_%28Unternehmen%29_2021_logo.svg"
+            case "Carrefour Market":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
+            case "Avia":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
+            case "CORA":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
+            case "Bricomarché":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
+            case "Leclerc":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
+            case "Système U":	 
+            case "Super U":	
+            case "Station U":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
+            case "Elf":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
+            case "Leader Price":	 
+            case "LEADER-PRICE":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg"
+            case "BP":	 
+            case "BP Express":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg"
+            case "Roady":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg"
+            case "Huit à 8":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
+            case "ENI FRANCE":	 
+            case "ENI":	
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg"
+            case "Atac":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
+            case "Shell":	 
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
+            case "Total":	 
+            case "Total Access":	
+            case "Elan":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
