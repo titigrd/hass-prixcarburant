@@ -39,5 +39,25 @@
     "abort": {
       "yaml_configuration": "Intégration configurée depuis configuration.yaml"
     }
+  },
+  "services": {
+    "find_nearest_stations": {
+      "name": "Trouver les stations proches",
+      "description": "Trouver les stations proches les moins chères",
+      "fields": {
+        "entity_id": {
+          "name": "Entité",
+          "description": "Entité possédant une localisation"
+        },
+        "fuel": {
+          "name": "Carburant",
+          "description": "Le type de carburant"
+        },
+        "distance": {
+          "name": "Distance maximum",
+          "description": "Distance maximum entre les stations et l'entité"
+        }
+      }
+    }
   }
 }

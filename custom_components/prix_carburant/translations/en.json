@@ -39,5 +39,25 @@
                 }
             }
         }
+    },
+    "services": {
+      "find_nearest_stations": {
+        "name": "Find nearest station",
+        "description": "Find less expansive nearest stations",
+        "fields": {
+          "entity_id": {
+            "name": "Entity",
+            "description": "Entity with location attributes"
+          },
+          "fuel": {
+            "name": "Fuel",
+            "description": "Fuel type"
+          },
+          "distance": {
+            "name": "Maximum distance",
+            "description": "Maximum distance between the stations and the entity"
+          }
+        }
+      }
     }
 }

@@ -1,17 +1,11 @@
 find_nearest_stations:
-  name: "Trouver les stations proches"
-  description: "Trouver les stations proches les moins chères"
   fields:
     entity_id:
-      name: Entité
-      description: Entité possédant une localisation
       required: true
       example: person.me
       selector:
         entity:
     fuel:
-      name: Carburant
-      description: Le type de carburant
       required: true
       advanced: false
       example: "E10"
@@ -25,8 +19,6 @@ find_nearest_stations:
             - "E85"
             - "GPLc"
     distance:
-      name: Distance maximum
-      description: Distance maximum entre les stations et l'entité
       required: true
       default: 10
       selector:
