@@ -15,7 +15,7 @@ from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
     ATTR_ADDRESS,
@@ -27,7 +27,6 @@ from .const import (
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
     ATTR_UPDATED_DATE,
-    CONF_DISPLAY_ENTITY_PICTURES,
     CONF_FUELS,
     CONF_STATIONS,
     DOMAIN,
@@ -71,6 +70,7 @@ async def async_setup_entry(
     config = entry.data
     options = entry.options
 
+    coordinator: DataUpdateCoordinator = data["coordinator"]
     tool: PrixCarburantTool = data["tool"]
 
     enabled_fuels = {}
@@ -82,53 +82,54 @@ async def async_setup_entry(
     for station_id, station_data in tool.stations.items():
         for fuel in FUELS:
             if fuel in station_data[ATTR_FUELS] and enabled_fuels[fuel] is True:
-                entities.append(PrixCarburant(station_id, station_data, fuel, data))
+                entities.append(
+                    PrixCarburant(station_id, station_data, fuel, coordinator)
+                )
 
     async_add_entities(entities, True)
 
 
-class PrixCarburant(CoordinatorEntity, SensorEntity):
+class PrixCarburant(SensorEntity):
     """Representation of a Sensor."""
 
-    _attr_icon = "mdi:gas-station"
-    _attr_device_class = SensorDeviceClass.MONETARY
-    _attr_native_unit_of_measurement = CURRENCY_EURO
-
-    def __init__(
-        self, station_id: str, station_info: dict, fuel: str, entry_data: dict
-    ) -> None:
+    def __init__(self, station_id, station_info, fuel, coordinator) -> None:
         """Initialize the sensor."""
-        super().__init__(entry_data["coordinator"])
         self.station_id = station_id
         self.station_info = station_info
         self.fuel = fuel
+        self.coordinator = coordinator
 
         self._last_update = None
+
+        self._attr_icon = "mdi:gas-station"
+        self._attr_device_class = SensorDeviceClass.MONETARY
         self._attr_unique_id = "_".join([DOMAIN, str(self.station_id), self.fuel])
+        self._attr_native_unit_of_measurement = CURRENCY_EURO
         if self.station_info[ATTR_NAME] != "undefined":
             station_name = f"Station {self.station_info[ATTR_NAME]}"
         else:
             station_name = f"Station {self.station_id}"
         self._attr_name = f"{station_name} {self.fuel}"
 
-        if entry_data["options"][CONF_DISPLAY_ENTITY_PICTURES] is True:
-            match self.station_info[ATTR_BRAND]:
-                case "Système U":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-                case "Total":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-                case "Total Access":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-                case "Intermarché":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/8/8c/Logo_Groupe_Les_Mousquetaires.svg"
-                case "Leclerc":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
-                case "Carrefour":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Carrefour_logo.svg"
-                case "Carrefour Market":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
-                case "Auchan":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/a/aa/Auchan-A.svg"
+        match self.station_info[ATTR_BRAND]:
+            case "Système U":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
+            case "Total":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
+            case "Total Access":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
+            case "Intermarché":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/8/8c/Logo_Groupe_Les_Mousquetaires.svg"
+            case "Leclerc":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
+            case "Carrefour":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Carrefour_logo.svg"
+            case "Carrefour Market":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
+            case "Auchan":
+                self._attr_entity_picture = (
+                    "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
+                )
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
