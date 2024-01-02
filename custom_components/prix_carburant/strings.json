@@ -4,7 +4,7 @@
       "user": {
         "description": "Get stations from your Home-Assistant location (check general settings to check it)",
         "data": {
-          "scan_interval": "Time in minute between two data updates",
+          "scan_interval": "Time in hours between two data updates",
           "display_entity_pictures": "Add brand logo to entity pictures",
           "max_km": "Maximum distance from home",
           "fuels_Gazole": "Show Gazole",
@@ -24,7 +24,7 @@
     "step": {
       "init": {
         "data": {
-          "scan_interval": "Time in minute between two data updates",
+          "scan_interval": "Time in hours between two data updates",
           "display_entity_pictures": "Add brand logo to entity pictures",
           "max_km": "Maximum distance from home",
           "fuels_Gazole": "Show Gazole",

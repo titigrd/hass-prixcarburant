@@ -4,7 +4,7 @@
       "user": {
         "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales). Sélectionnez ensuite les carburants dont vous souhaitez obtenir les tarifs.",
         "data": {
-          "scan_interval": "Temps en minutes entre deux mise à jour de données",
+          "scan_interval": "Temps en heures entre deux mise à jour de données",
           "display_entity_pictures": "Ajoute le logo de la marque en image d'entité",
           "max_km": "Distance maximum",
           "fuels_Gazole": "Afficher le gasoil",
@@ -24,7 +24,7 @@
     "step": {
       "init": {
         "data": {
-          "scan_interval": "Temps en minutes entre deux mise à jour de données",
+          "scan_interval": "Temps en heures entre deux mise à jour de données",
           "display_entity_pictures": "Ajoute le logo de la marque en image d'entité",
           "max_km": "Distance maximum",
           "fuels_Gazole": "Afficher le gasoil",

@@ -3,7 +3,7 @@
 ## 3.2.0
 
 - Fix auto-update
-- Add scan interval option (default to 240 minutes)
+- Add scan interval option (default to 4 hours)
 - Add option to use brand logo as entity picture or not (default to yes)
 
 ## 3.1.1
