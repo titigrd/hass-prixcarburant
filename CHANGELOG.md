@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.3.0
+
+- Update station and logo db
+
 ## 3.2.0
 
 - Fix auto-update

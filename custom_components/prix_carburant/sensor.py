@@ -15,7 +15,7 @@ from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTR_ADDRESS,
@@ -27,6 +27,7 @@ from .const import (
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
     ATTR_UPDATED_DATE,
+    CONF_DISPLAY_ENTITY_PICTURES,
     CONF_FUELS,
     CONF_STATIONS,
     DOMAIN,
@@ -70,7 +71,6 @@ async def async_setup_entry(
     config = entry.data
     options = entry.options
 
-    coordinator: DataUpdateCoordinator = data["coordinator"]
     tool: PrixCarburantTool = data["tool"]
 
     enabled_fuels = {}
@@ -82,54 +82,93 @@ async def async_setup_entry(
     for station_id, station_data in tool.stations.items():
         for fuel in FUELS:
             if fuel in station_data[ATTR_FUELS] and enabled_fuels[fuel] is True:
-                entities.append(
-                    PrixCarburant(station_id, station_data, fuel, coordinator)
-                )
+                entities.append(PrixCarburant(station_id, station_data, fuel, data))
 
     async_add_entities(entities, True)
 
 
-class PrixCarburant(SensorEntity):
+class PrixCarburant(CoordinatorEntity, SensorEntity):
     """Representation of a Sensor."""
 
-    def __init__(self, station_id, station_info, fuel, coordinator) -> None:
+    _attr_icon = "mdi:gas-station"
+    _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_native_unit_of_measurement = CURRENCY_EURO
+
+    def __init__(
+        self, station_id: str, station_info: dict, fuel: str, entry_data: dict
+    ) -> None:
         """Initialize the sensor."""
+        super().__init__(entry_data["coordinator"])
         self.station_id = station_id
         self.station_info = station_info
         self.fuel = fuel
-        self.coordinator = coordinator
 
         self._last_update = None
-
-        self._attr_icon = "mdi:gas-station"
-        self._attr_device_class = SensorDeviceClass.MONETARY
         self._attr_unique_id = "_".join([DOMAIN, str(self.station_id), self.fuel])
-        self._attr_native_unit_of_measurement = CURRENCY_EURO
         if self.station_info[ATTR_NAME] != "undefined":
             station_name = f"Station {self.station_info[ATTR_NAME]}"
         else:
             station_name = f"Station {self.station_id}"
         self._attr_name = f"{station_name} {self.fuel}"
 
-        match self.station_info[ATTR_BRAND]:
-            case "Système U":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-            case "Total":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-            case "Total Access":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-            case "Intermarché":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/8/8c/Logo_Groupe_Les_Mousquetaires.svg"
-            case "Leclerc":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
-            case "Carrefour":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Carrefour_logo.svg"
-            case "Carrefour Market":
-                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
-            case "Auchan":
-                self._attr_entity_picture = (
-                    "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
-                )
+        if entry_data["options"][CONF_DISPLAY_ENTITY_PICTURES] is True:
+            match self.station_info[ATTR_BRAND]:
+                case "Aldi":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg"
+                case "Atac":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
+                case "Auchan":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/a/aa/Auchan-A.svg"
+                case "Avia":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
+                case "BP" | "BP Express":
+                    self._attr_entity_picture = (
+                        "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg"
+                    )
+                case "Bricomarché":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
+                case "Carrefour" | "Carrefour Contact" | "Carrefour Express":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
+                case "Carrefour Market":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
+                case "Casino" | "Super Casino":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
+                case "CORA":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
+                case "Elf":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
+                case "ENI FRANCE" | "ENI":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg"
+                case "Esso" | "Esso Express":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/0/0e/Esso-Logo.svg"
+                case "Géant":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
+                case "Huit à 8":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
+                case "Intermarché" | "Intermarché Contact":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/8/8c/Logo_Groupe_Les_Mousquetaires.svg"
+                case "Leclerc":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
+                case "Leader Price" | "LEADER-PRICE":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg"
+                case "Monoprix":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg"
+                case "Roady":
+                    self._attr_entity_picture = (
+                        "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg"
+                    )
+                case "Shell":
+                    self._attr_entity_picture = (
+                        "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
+                    )
+                case "SPAR" | "SPAR STATION":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
+                case "Système U" | "Super U" | "Station U":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
+                case "Total" | "Total Access":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
+                case "Weldom":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4b/Logo_weldom.png"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
