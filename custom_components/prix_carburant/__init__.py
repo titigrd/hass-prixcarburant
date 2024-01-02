@@ -22,6 +22,7 @@ from .const import (
     CONF_DISPLAY_ENTITY_PICTURES,
     CONF_MAX_KM,
     CONF_STATIONS,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     PLATFORMS,
 )
@@ -40,8 +41,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     tool = PrixCarburantTool(time_zone=hass.config.time_zone, session=websession)
 
-    display_entity_pictures = config[CONF_DISPLAY_ENTITY_PICTURES]
-    update_interval = int(config[CONF_SCAN_INTERVAL])
+    display_entity_pictures = config.get(CONF_DISPLAY_ENTITY_PICTURES, True)
+    update_interval = int(config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
 
     # yaml configuration
     if CONF_STATIONS in config:
