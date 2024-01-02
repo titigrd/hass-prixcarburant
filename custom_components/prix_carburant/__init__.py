@@ -3,14 +3,14 @@ from datetime import timedelta
 import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME
+from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,
     ServiceResponse,
     SupportsResponse,
 )
-from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -19,6 +19,7 @@ from .const import (
     ATTR_CITY,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    CONF_DISPLAY_ENTITY_PICTURES,
     CONF_MAX_KM,
     CONF_STATIONS,
     DOMAIN,
@@ -33,12 +34,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    config = entry.data
-    options = entry.options
+    config: dict = entry.data | entry.options
 
     websession = async_get_clientsession(hass)
 
     tool = PrixCarburantTool(time_zone=hass.config.time_zone, session=websession)
+
+    display_entity_pictures = config[CONF_DISPLAY_ENTITY_PICTURES]
+    update_interval = int(config[CONF_SCAN_INTERVAL])
 
     # yaml configuration
     if CONF_STATIONS in config:
@@ -51,16 +54,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # ui configuration
     else:
         _LOGGER.info("Init stations list near Home-Assistant location")
-        max_distance = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM))
         await tool.init_stations_from_location(
             latitude=hass.config.latitude,
             longitude=hass.config.longitude,
-            distance=max_distance,
+            distance=config[CONF_MAX_KM],
         )
         _LOGGER.info("%s stations found", str(len(tool.stations)))
 
     async def async_update_data():
         """Fetch data from API."""
+        _LOGGER.info("Update stations prices")
         await tool.update_stations_prices()
         return tool.stations
 
@@ -69,34 +72,38 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER,
         name=DOMAIN,
         update_method=async_update_data,
-        update_interval=timedelta(minutes=60),
+        update_interval=timedelta(minutes=update_interval),
     )
 
-    await coordinator.async_refresh()
+    await coordinator.async_config_entry_first_refresh()
 
-    if not coordinator.last_update_success:
-        raise ConfigEntryNotReady
-
-    hass.data[DOMAIN][entry.entry_id] = {"tool": tool, "coordinator": coordinator}
+    hass.data[DOMAIN][entry.entry_id] = {
+        "tool": tool,
+        "coordinator": coordinator,
+        "options": {
+            CONF_DISPLAY_ENTITY_PICTURES: display_entity_pictures,
+        },
+    }
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     async def find_nearest_stations(call: ServiceCall) -> ServiceResponse:
-        """Search in the date range and return the matching items."""
+        """Search in the range and return the matching items."""
         fuel = call.data["fuel"]
         distance = call.data["distance"]
         entity_id = call.data["entity_id"]
         entity = hass.states.get(entity_id)
         if not entity:
             raise HomeAssistantError("The entity specified was not found")
-        entity_longitude = entity.attributes.get("longitude")
-        entity_latitude = entity.attributes.get("latitude")
-        if not entity_longitude and not entity_latitude:
+        if "longitude" not in entity.attributes and "latitude" not in entity.attributes:
             raise HomeAssistantError(
-                "The entity specified must have latitude and longitude attribute"
+                f"No coordinate attributes found for the entity {entity_id}"
             )
         stations = await tool.find_nearest_station(
-            entity_longitude, entity_latitude, fuel, distance
+            longitude=float(entity.attributes["longitude"]),
+            latitude=float(entity.attributes["latitude"]),
+            fuel=fuel,
+            distance=distance,
         )
         return {
             "stations": [
@@ -105,7 +112,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     "price": station_data.get(ATTR_PRICE),
                     "address": f"{station_data[ATTR_ADDRESS]}, {station_data[ATTR_POSTAL_CODE]} {station_data[ATTR_CITY]}",
                 }
-                for station_id, station_data in stations.items()
+                for station_data in stations.values()
             ],
         }
 

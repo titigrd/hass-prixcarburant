@@ -8,6 +8,7 @@ PLATFORMS: Final = [Platform.SENSOR, Platform.BUTTON]
 
 DEFAULT_NAME: Final = "Prix Carburant"
 DEFAULT_MAX_KM: Final = 15
+DEFAULT_SCAN_INTERVAL: Final = 240
 
 ATTR_ADDRESS = "address"
 ATTR_POSTAL_CODE = "postal_code"
@@ -21,6 +22,7 @@ ATTR_PRICE = "price"
 CONF_MAX_KM = "max_km"
 CONF_FUELS = "fuels"
 CONF_STATIONS = "stations"
+CONF_DISPLAY_ENTITY_PICTURES = "display_entity_pictures"
 
 ATTR_GAZOLE = "Gazole"
 ATTR_SP95 = "SP95"

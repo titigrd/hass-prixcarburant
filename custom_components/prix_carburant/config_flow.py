@@ -2,38 +2,58 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import Any
 
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
+from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    CONF_DISPLAY_ENTITY_PICTURES,
     CONF_FUELS,
     CONF_MAX_KM,
     CONF_STATIONS,
     DEFAULT_MAX_KM,
     DEFAULT_NAME,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     FUELS,
 )
 
 
-def _build_schema(config: Mapping, options: Mapping) -> vol.Schema:
+def _build_schema(data: Mapping[str, Any], options: Mapping[str, Any]) -> vol.Schema:
     """Build schema according to config/options."""
 
-    schema = {}
+    config: dict[str, Any] = dict(data) | dict(options)
+
+    schema = {
+        vol.Required(
+            CONF_SCAN_INTERVAL,
+            default=config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        ): int,
+        vol.Required(
+            CONF_DISPLAY_ENTITY_PICTURES,
+            default=config.get(CONF_DISPLAY_ENTITY_PICTURES, True),
+        ): bool,
+    }
     if CONF_STATIONS not in config:
-        max_km = options.get(CONF_MAX_KM, config.get(CONF_MAX_KM, DEFAULT_MAX_KM))
-        schema.update({vol.Required(CONF_MAX_KM, default=max_km): int})
+        schema.update(
+            {
+                vol.Required(
+                    CONF_MAX_KM, default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM)
+                ): int
+            }
+        )
     for fuel in FUELS:
         fuel_key = f"{CONF_FUELS}_{fuel}"
         schema.update(
             {
                 vol.Required(
                     fuel_key,
-                    default=options.get(fuel_key, config.get(fuel_key, True)),
+                    default=config.get(fuel_key, True),
                 ): bool
             }
         )
@@ -91,6 +111,12 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
         """Manage the options."""
         errors: dict[str, str] = {}
         if user_input is not None:
+            self.hass.config_entries.async_update_entry(
+                self.config_entry, options=user_input
+            )
+            self.hass.async_create_task(
+                self.hass.config_entries.async_reload(self.config_entry.entry_id)
+            )
             return self.async_create_entry(
                 title=DEFAULT_NAME,
                 data=user_input,

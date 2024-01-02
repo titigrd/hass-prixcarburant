@@ -29,7 +29,7 @@ Search `Prix Carburant` in Integration.
 sensor:
     - platform: prix_carburant
     # IDs from https://www.prix-carburants.gouv.fr/
-    stations:
+      stations:
         - 12345678
         - 34567890
 ```
