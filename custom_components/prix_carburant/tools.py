@@ -25,7 +25,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
-STATIONS_NAME_FILE = "stations_name.json"
+STATIONS_NAME_PATH = "data/stations_name.json"
 
 
 class PrixCarburantTool:
@@ -42,10 +42,10 @@ class PrixCarburantTool:
         self._stations_names: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
 
-        _LOGGER.debug("Load stations names from local file %s", STATIONS_NAME_FILE)
+        _LOGGER.debug("Load stations names from local file %s", STATIONS_NAME_PATH)
         with open(
             os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
+                os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_PATH
             ),
             encoding="UTF-8",
         ) as file:
