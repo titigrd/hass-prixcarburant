@@ -32559,6 +32559,10 @@
     "Nom": "Leclerc",
     "Marque": "Leclerc"
   },
+  "79000015": {
+    "Nom": "Intermarché Station-service Niort Av de Nantes",
+    "Marque": "Intermarché"
+  },
   "79004001": {
     "Nom": "NIORT OUEST DISTRIBUTION",
     "Marque": "Leclerc"
@@ -32645,6 +32649,10 @@
   },
   "79180003": {
     "Nom": "Carrefour Contact",
+    "Marque": "Carrefour Contact"
+  },
+  "79180005": {
+    "Nom": "Carrefour Contact Chauray",
     "Marque": "Carrefour Contact"
   },
   "79190001": {
