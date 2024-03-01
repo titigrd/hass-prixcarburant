@@ -146,7 +146,7 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                 case "Huit à 8":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
                 case "Intermarché" | "Intermarché Contact":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/8/8c/Logo_Groupe_Les_Mousquetaires.svg"
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/3/34/Les_Mousquetaires_logo_2009.svg"
                 case "Leclerc":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
                 case "Leader Price" | "LEADER-PRICE":
