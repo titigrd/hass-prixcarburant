@@ -133,7 +133,7 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
                 case "Casino" | "Super Casino":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
-                case "Cora":
+                case "Cora" | "CORA":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
                 case "Elf":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
