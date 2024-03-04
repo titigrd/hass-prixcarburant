@@ -133,7 +133,7 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
                 case "Casino" | "Super Casino":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
-                case "CORA":
+                case "Cora" | "CORA":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
                 case "Elf":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
@@ -169,6 +169,8 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
                 case "Weldom":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4b/Logo_weldom.png"
+                case "Supermarché Match":
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
