@@ -161,7 +161,7 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                     self._attr_entity_picture = (
                         "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
                     )
-                case "SPAR" | "SPAR STATION":
+                case "SPAR" | "SPAR STATION" | "Supermarchés Spar":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
                 case "Système U" | "Super U" | "Station U":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
