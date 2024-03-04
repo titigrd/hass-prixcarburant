@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.4.0
+
+- Update stations and logo db
+
 ## 3.3.1
 
 - Fix config flow migration to 3.2.0 version
