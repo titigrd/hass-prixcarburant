@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.4.1
+
+- fix station id
+
 ## 3.4.0
 
 - Update stations and logo db
