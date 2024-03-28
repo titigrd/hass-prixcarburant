@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.5.0
+
+- add icon for service
+
 ## 3.4.1
 
 - fix station id
