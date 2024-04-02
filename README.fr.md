@@ -87,6 +87,43 @@ entities:
         name: SP98
 ```
 
+### via auto-entities et multiple-entity-row
+
+```yaml
+type: custom:auto-entities
+card:
+  type: entities
+filter:
+  template: |-
+    {% for state in states.sensor -%}
+      {%- if state.entity_id | regex_match("sensor.station\_.*\_e10", ignorecase=True) -%}
+        {{
+          {
+          'entity': state.entity_id,
+          'name': state.attributes.friendly_name.split()[1:-1] | join(" "),
+          'type': "custom:multiple-entity-row",
+          'show_state': false,
+          'entities': [
+            {
+              'entity': state.entity_id,
+              'name': "E10"
+            },
+            {
+              'entity': state.entity_id.replace('e10', 'sp98'),
+              'name': "SP98"
+            },
+            {
+              'entity': state.entity_id,
+              'attribute': 'days_since_last_update',
+              'name': "MaJ"
+            },
+          ]
+          }
+        }},
+      {%- endif -%}
+    {%- endfor %}
+```
+
 ### via carte flex-table-card
 
 ![image](https://user-images.githubusercontent.com/44190435/176176400-47d20078-0105-46c2-8c81-ae58e58d08f4.png)
