@@ -127,10 +127,8 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                     )
                 case "Bricomarché":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
-                case "Carrefour" | "Carrefour Contact" | "Carrefour Express":
+                case "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
-                case "Carrefour Market":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
                 case "Casino" | "Super Casino":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
                 case "Cora" | "CORA":
