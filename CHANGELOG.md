@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.5.1
+
+- fix changed API URL
+
 ## 3.5.0
 
 - add icon for service
