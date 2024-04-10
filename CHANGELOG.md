@@ -1,8 +1,12 @@
 # CHANGELOG
 
-## 3.5.1
+## 3.5.2
 
 - fix changed API URL
+
+## 3.5.1
+
+- fix Auchan and Carrefour icons
 
 ## 3.5.0
 
