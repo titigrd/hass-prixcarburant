@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.5.4
+
+- fix changed API URL (revert to 3.5.1)
+
 ## 3.5.3
 
 - add E.Leclerc Violaines
