@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 3.6.0
+
+- Fix event loop warning
+- Move entity picture in tools
+
 ## 3.5.6
 
 - Update stations

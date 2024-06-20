@@ -1,4 +1,5 @@
 """Prix Carburant sensor platform."""
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -33,7 +34,7 @@ from .const import (
     DOMAIN,
     FUELS,
 )
-from .tools import PrixCarburantTool
+from .tools import PrixCarburantTool, get_entity_picture
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -80,9 +81,13 @@ async def async_setup_entry(
 
     entities = []
     for station_id, station_data in tool.stations.items():
-        for fuel in FUELS:
-            if fuel in station_data[ATTR_FUELS] and enabled_fuels[fuel] is True:
-                entities.append(PrixCarburant(station_id, station_data, fuel, data))
+        entities.extend(
+            [
+                PrixCarburant(station_id, station_data, f, data)
+                for f in FUELS
+                if f in station_data[ATTR_FUELS] and enabled_fuels[f] is True
+            ]
+        )
 
     async_add_entities(entities, True)
 
@@ -112,63 +117,9 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
         self._attr_name = f"{station_name} {self.fuel}"
 
         if entry_data["options"][CONF_DISPLAY_ENTITY_PICTURES] is True:
-            match self.station_info[ATTR_BRAND]:
-                case "Aldi":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg"
-                case "Atac":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
-                case "Auchan":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/c/cd/Logo_Auchan_%282015%29.svg"
-                case "Avia":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
-                case "BP" | "BP Express":
-                    self._attr_entity_picture = (
-                        "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg"
-                    )
-                case "Bricomarché":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
-                case "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
-                case "Casino" | "Super Casino":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
-                case "Cora" | "CORA":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
-                case "Elf":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
-                case "ENI FRANCE" | "ENI":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg"
-                case "Esso" | "Esso Express":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/0/0e/Esso-Logo.svg"
-                case "Géant":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
-                case "Huit à 8":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
-                case "Intermarché" | "Intermarché Contact":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/3/34/Les_Mousquetaires_logo_2009.svg"
-                case "Leclerc":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
-                case "Leader Price" | "LEADER-PRICE":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg"
-                case "Monoprix":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg"
-                case "Roady":
-                    self._attr_entity_picture = (
-                        "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg"
-                    )
-                case "Shell":
-                    self._attr_entity_picture = (
-                        "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
-                    )
-                case "SPAR" | "SPAR STATION" | "Supermarchés Spar":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
-                case "Système U" | "Super U" | "Station U":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-                case "Total" | "Total Access":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-                case "Weldom":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4b/Logo_weldom.png"
-                case "Supermarché Match":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
+            self._attr_entity_picture = get_entity_picture(
+                self.station_info[ATTR_BRAND]
+            )
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
@@ -203,9 +154,9 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                 delay = datetime.now(tz=UTC) - datetime.strptime(
                     fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
                 )
-                self._attr_extra_state_attributes[
-                    ATTR_DAYS_SINCE_LAST_UPDATE
-                ] = delay.days
+                self._attr_extra_state_attributes[ATTR_DAYS_SINCE_LAST_UPDATE] = (
+                    delay.days
+                )
             except ValueError as err:
                 _LOGGER.warning(
                     "Cannot calculate days for %s since last update: %s",

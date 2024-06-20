@@ -6,6 +6,16 @@ Récupère les stations à x kilomètres de votre domicile (ou via une liste dé
 Rafraîchissement des données toutes les heures, il est possible de lancer un rafraîchissement manuel via l'entité `button`.
 Un service est mis à disposition pour trouver le meilleur prix d'un carburant donné autour de soi ou de n'importe quelle entité possédant une localisation (`device_tracker`, `person`, `sensor`...).
 
+## Contribution
+
+### Ajouter/modifier une station
+
+Faire une PR en ajoutant/modifiant la station dans le fichier [stations_name.json](custom_components/prix_carburant/stations_name.json). Bien vérifier que le champs `Marque` corresponde à une marque existante en respectant la casse.
+
+### Ajouter/corriger une image d'entité (entity picture)
+
+Faire une PR en ajoutant/corrigeant l'image dans le fichier [tools.py](custom_components/prix_carburant/tools.py), dans la fonction `get_entity_picture`.
+
 ## Installation
 
 ### HACS

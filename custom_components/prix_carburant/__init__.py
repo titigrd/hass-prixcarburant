@@ -1,4 +1,5 @@
 """Prix Carburant integration."""
+
 from datetime import timedelta
 import logging
 
@@ -39,7 +40,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     websession = async_get_clientsession(hass)
 
-    tool = PrixCarburantTool(time_zone=hass.config.time_zone, session=websession)
+    tool = await hass.async_add_executor_job(
+        PrixCarburantTool, hass.config.time_zone, 60, websession
+    )
 
     display_entity_pictures = config.get(CONF_DISPLAY_ENTITY_PICTURES, True)
     update_interval = int(config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))

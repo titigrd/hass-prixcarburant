@@ -319,6 +319,77 @@ def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
     return round(calcul_c * earth_radius, 2)
 
 
+def get_entity_picture(brand: str) -> str:  # noqa: C901
+    """Get entity picture based on brand."""
+    match brand:
+        case "Aldi":
+            return "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg"
+        case "Atac":
+            return "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
+        case "Auchan":
+            return "https://upload.wikimedia.org/wikipedia/fr/c/cd/Logo_Auchan_%282015%29.svg"
+        case "Avia":
+            return "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
+        case "BP" | "BP Express":
+            return "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg"
+        case "Bricomarché":
+            return "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
+        case (
+            "Carrefour"
+            | "Carrefour Contact"
+            | "Carrefour Express"
+            | "Carrefour Market"
+        ):
+            return "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
+        case "Casino" | "Super Casino":
+            return "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
+        case "Cora" | "CORA":
+            return "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
+        case "Elf":
+            return (
+                "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
+            )
+        case "ENI FRANCE" | "ENI":
+            return (
+                "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg"
+            )
+        case "Esso" | "Esso Express":
+            return "https://upload.wikimedia.org/wikipedia/commons/0/0e/Esso-Logo.svg"
+        case "Géant":
+            return "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
+        case "Huit à 8":
+            return (
+                "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
+            )
+        case "Intermarché" | "Intermarché Contact":
+            return "https://upload.wikimedia.org/wikipedia/commons/3/34/Les_Mousquetaires_logo_2009.svg"
+        case "Leclerc":
+            return "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
+        case "Leader Price" | "LEADER-PRICE":
+            return "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg"
+        case "Monoprix":
+            return (
+                "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg"
+            )
+        case "Roady":
+            return "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg"
+        case "Shell":
+            return "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
+        case "SPAR" | "SPAR STATION" | "Supermarchés Spar":
+            return "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
+        case "Système U" | "Super U" | "Station U":
+            return "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
+        case "Total" | "Total Access":
+            return (
+                "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
+            )
+        case "Weldom":
+            return "https://upload.wikimedia.org/wikipedia/commons/4/4b/Logo_weldom.png"
+        case "Supermarché Match":
+            return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
+    return ""
+
+
 class PrixCarburantToolCannotConnectError(Exception):
     """Exception to indicate an error in connection."""
 
