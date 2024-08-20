@@ -326,3 +326,78 @@ card_mod:
       margin-top: 0em;
         }
 ```
+### Créer une carte et indiquer les stations autour d'un device movible
+Note: c'est un exemple donc on peut changer comme on veut.
+1. Créer le sensor avec des stations autour de 'toi'
+Utiliser le service (action)  
+```
+template: 
+  - trigger:
+      - platform: time_pattern
+        minutes: /1
+    action:
+      - action: prix_carburant.find_nearest_stations
+        data:
+          distance: 10
+          entity_id: device_tracker.mydevicetracker (ou mobile)
+          fuel: Gazole
+        response_variable: stations_feed
+    sensor:
+      - name: test_stations
+        unique_id: test_stations
+        state: "{{ now().isoformat() }}"
+        attributes:        
+            stations: "{{ stations_feed.stations }}"
+```
+Ça donne 
+![image](https://github.com/user-attachments/assets/fc174513-9a06-4d19-a752-f4e91b16b81e)
+
+
+2. l'automatisation pour créer des zones qui représentent les stations
+Important: il faut installer ['spook'](https://github.com/frenck/spook) pour avoir les services/actions 'create zone' et 'delete zone'
+Ici par exemple chaque minute une maj (trops je pense) mais on peut aussi utiliser un trigger quand le mobile bouge 
+```
+alias: Station Zones
+description: ""
+trigger:
+  - platform: time_pattern
+    minutes: /1
+condition: []
+action:
+  - repeat:
+      for_each: >-
+        {{states.zone |selectattr('entity_id', 'search',
+        'station_')|map(attribute='entity_id') | list }}
+      sequence:
+        - action: zone.delete
+          data:
+            entity_id: "{{ repeat.item }}"
+  - repeat:
+      for_each: "{{ state_attr('sensor.test_stations', 'stations') | list  }}"
+      sequence:
+        - action: zone.create
+          data:
+            radius: 100
+            icon: mdi:gas-station-in-use-outline
+            name: "{{ 'station_' + repeat.item.name }}"
+            latitude: "{{ repeat.item.latitude }}"
+            longitude: "{{ repeat.item.longitude }}"
+mode: single
+```
+3. Créer la carte
+
+![image](https://github.com/user-attachments/assets/77be362e-7f2a-4cfd-93ee-2165469a1469)
+
+
+```
+type: custom:auto-entities
+card:
+  type: map
+  auto_fit: true
+filter:
+  include:
+    - entity_id: 'zone.station*'
+  exclude:
+    - state: unavailable
+show_empty: true
+```
