@@ -12713,15 +12713,15 @@
   },
   "33450007": {
     "Nom": "CARREFOUR MARKET ST LOUBES",
-    "Marque": "Carrefour Market" 
+    "Marque": "Carrefour Market"
   },
   "33450008": {
     "Nom": "INTERMARCHE MONTUSSAN",
-    "Marque": "Intermarché" 
+    "Marque": "Intermarché"
   },
   "33450009": {
     "Nom": "INTERMARCHE IZON",
-    "Marque": "Intermarché" 
+    "Marque": "Intermarché"
   },
   "33460003": {
     "Nom": "Eurl lautrec",
@@ -31387,6 +31387,10 @@
     "Nom": "RELAIS LA ROCHETTE MELUN",
     "Marque": "Total Access"
   },
+  "77000014": {
+    "Nom": "Intermarché Vaux-le-pénil",
+    "Marque": "Intermarché"
+  },
   "77090001": {
     "Nom": "Carrefour COLLEGIEN",
     "Marque": "Carrefour"
@@ -32030,6 +32034,10 @@
   "77870001": {
     "Nom": "CASINO SUPERMARCHE",
     "Marque": "Casino"
+  },
+  "77870002": {
+    "Nom": "Auchan Vulaines-sur-Seine",
+    "Marque": "Auchan"
   },
   "77880001": {
     "Nom": "RELAIS DE LA COMMANDERIE",
