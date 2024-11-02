@@ -214,7 +214,7 @@ css:
   tbody tr:nth-child(odd): 'background-color: rgba(255, 255, 255, 0.2)'
   tbody tr:nth-child(even): 'background-color: rgba(255, 255, 255, 0.1)'
   tbody tr:nth-child(1): 'color: #00C62D; font-weight: bold'
-  tbody tr:nth-child(4): 'color: #dd2c00'
+  tbody tr:nth-last-child(1): "color: #dd2c00",
 card_mod: null
 style: |
   :host {
