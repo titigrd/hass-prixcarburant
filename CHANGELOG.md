@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 3.8.0
+
+- Normalize name, address and city of stations if put in uppercase or lowercase exclusively
+
+## 3.7.0
+
+- Add lat/lon to the output of the service call
+
 ## 3.6.0
 
 - Fix event loop warning

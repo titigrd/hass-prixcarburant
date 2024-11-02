@@ -335,10 +335,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "Bricomarché":
             return "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
         case (
-            "Carrefour"
-            | "Carrefour Contact"
-            | "Carrefour Express"
-            | "Carrefour Market"
+            "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market"
         ):
             return "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
         case "Casino" | "Super Casino":
@@ -388,6 +385,13 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "Supermarché Match":
             return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
     return ""
+
+
+def normalize_string(string: str) -> str:
+    """Normalize a string."""
+    if string.isupper() or string.islower():
+        return string.capitalize()
+    return string
 
 
 class PrixCarburantToolCannotConnectError(Exception):

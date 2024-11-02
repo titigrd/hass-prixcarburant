@@ -34,7 +34,7 @@ from .const import (
     DOMAIN,
     FUELS,
 )
-from .tools import PrixCarburantTool, get_entity_picture
+from .tools import PrixCarburantTool, get_entity_picture, normalize_string
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -129,11 +129,11 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
             configuration_url="https://www.prix-carburants.gouv.fr/",
         )
         self._attr_extra_state_attributes = {
-            ATTR_NAME: self.station_info[ATTR_NAME],
+            ATTR_NAME: normalize_string(self.station_info[ATTR_NAME]),
             ATTR_BRAND: self.station_info[ATTR_BRAND],
-            ATTR_ADDRESS: self.station_info[ATTR_ADDRESS],
+            ATTR_ADDRESS: normalize_string(self.station_info[ATTR_ADDRESS]),
             ATTR_POSTAL_CODE: self.station_info[ATTR_POSTAL_CODE],
-            ATTR_CITY: self.station_info[ATTR_CITY],
+            ATTR_CITY: normalize_string(self.station_info[ATTR_CITY]),
             ATTR_LATITUDE: self.station_info[ATTR_LATITUDE],
             ATTR_LONGITUDE: self.station_info[ATTR_LONGITUDE],
             ATTR_DISTANCE: self.station_info[ATTR_DISTANCE],
