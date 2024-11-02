@@ -24,6 +24,7 @@ from .const import (
     ATTR_CITY,
     ATTR_DAYS_SINCE_LAST_UPDATE,
     ATTR_DISTANCE,
+    ATTR_FUEL_TYPE,
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
@@ -139,6 +140,7 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
             ATTR_DISTANCE: self.station_info[ATTR_DISTANCE],
             ATTR_UPDATED_DATE: None,
             ATTR_DAYS_SINCE_LAST_UPDATE: None,
+            ATTR_FUEL_TYPE: self.fuel,
         }
 
     @property

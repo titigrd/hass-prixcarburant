@@ -3,6 +3,7 @@
 ## 3.8.0
 
 - Normalize name, address and city of stations if put in uppercase or lowercase exclusively
+- Add fuel type on sensor attributes
 
 ## 3.7.0
 
