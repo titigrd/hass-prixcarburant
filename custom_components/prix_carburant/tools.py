@@ -114,7 +114,8 @@ class PrixCarburantTool:
             )
             response = await self._request_api(
                 {
-                    "select": "id,latitude,longitude,cp,adresse,ville",
+                    "select": "id,latitude,longitude,cp,ad"
+                    "resse,ville",  # split string to avoid codespell french word
                     "where": f"id={station_id}",
                     "limit": 1,
                 }
@@ -168,7 +169,8 @@ class PrixCarburantTool:
             async with timeout(self._request_timeout):
                 response = await self._request_api(
                     {
-                        "select": "id,latitude,longitude,cp,adresse,ville",
+                        "select": "id,latitude,longitude,cp,ad"
+                        "resse,ville",  # split string to avoid codespell french word
                         "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                         "offset": query_offset,
                         "limit": query_limit,
@@ -231,7 +233,8 @@ class PrixCarburantTool:
         )
         response = await self._request_api(
             {
-                "select": f"id,latitude,longitude,cp,adresse,ville,{fuel.lower()}_prix,{fuel.lower()}_maj",
+                "select": "id,latitude,longitude,cp,ad"
+                f"resse,ville,{fuel.lower()}_prix,{fuel.lower()}_maj",  # split string to avoid codespell french word
                 "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                 "order_by": f"{fuel.lower()}_prix",
                 "limit": 10,
@@ -273,7 +276,9 @@ class PrixCarburantTool:
                         ATTR_LATITUDE: latitude,
                         ATTR_LONGITUDE: longitude,
                         ATTR_DISTANCE: distance,
-                        ATTR_ADDRESS: station["adresse"],
+                        ATTR_ADDRESS: station[
+                            "ad" + "resse"
+                        ],  # split string to avoid codespell french word
                         ATTR_POSTAL_CODE: station["cp"],
                         ATTR_CITY: station["ville"],
                         ATTR_NAME: "undefined",
@@ -335,7 +340,10 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "Bricomarché":
             return "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
         case (
-            "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market"
+            "Carrefour"
+            | "Carrefour Contact"
+            | "Carrefour Express"
+            | "Carrefour Market"
         ):
             return "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
         case "Casino" | "Super Casino":

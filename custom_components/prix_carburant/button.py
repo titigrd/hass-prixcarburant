@@ -1,4 +1,5 @@
 """Prix Carburant button platform."""
+
 from __future__ import annotations
 
 import logging
@@ -35,7 +36,7 @@ class RefreshPrixCarburantButton(ButtonEntity):
         self._attr_device_class = ButtonDeviceClass.UPDATE
         self._attr_name = "Prix Carburant - Refresh prices"
         self._attr_icon = "mdi:refresh-circle"
-        self._attr_unique_id = "_".join([DOMAIN, "refresh_button"])
+        self._attr_unique_id = f"{DOMAIN}_refresh_button"
 
     async def async_press(self) -> None:
         """Press the button."""

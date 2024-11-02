@@ -4,6 +4,8 @@
 
 - Normalize name, address and city of stations if put in uppercase or lowercase exclusively
 - Add fuel type on sensor attributes
+- Add icon for service
+- Sensor entity will now restore last value after a restart if price is not available
 
 ## 3.7.0
 

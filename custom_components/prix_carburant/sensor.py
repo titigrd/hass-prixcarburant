@@ -7,12 +7,15 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.sensor import (
+    PLATFORM_SCHEMA_BASE,
+    RestoreSensor,
+    SensorDeviceClass,
+)
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME, CURRENCY_EURO
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -93,7 +96,7 @@ async def async_setup_entry(
     async_add_entities(entities, True)
 
 
-class PrixCarburant(CoordinatorEntity, SensorEntity):
+class PrixCarburant(CoordinatorEntity, RestoreSensor):
     """Representation of a Sensor."""
 
     _attr_icon = "mdi:gas-station"
