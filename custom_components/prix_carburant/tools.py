@@ -390,7 +390,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
 def normalize_string(string: str) -> str:
     """Normalize a string."""
     if string.isupper() or string.islower():
-        return string.capitalize()
+        return string.title()
     return string
 
 
