@@ -10,7 +10,13 @@ Un service est mis à disposition pour trouver le meilleur prix d'un carburant d
 
 ### Ajouter/modifier une station
 
-Faire une PR en ajoutant/modifiant la station dans le fichier [stations_name.json](custom_components/prix_carburant/stations_name.json). Bien vérifier que le champs `Marque` corresponde à une marque existante en respectant la casse.
+Faire une PR en ajoutant/modifiant la station dans le fichier [stations_name.json](custom_components/prix_carburant/stations_name.json). Bien vérifier que le champs `brand` corresponde à une marque existante en respectant la casse. Il est possible de surcharger par rapport aux données fournis par l'API les informations suivantes:
+
+- `name`: Nom de la station
+- `brand`: Marque de la station
+- `address`: Adresse de la station
+- `postal_code`: Code postal de la station
+- `city`: Ville de la station
 
 ### Ajouter/corriger une image d'entité (entity picture)
 
@@ -326,10 +332,14 @@ card_mod:
       margin-top: 0em;
         }
 ```
+
 ### Créer une carte et indiquer les stations autour d'un device movible
+
 Note: c'est un exemple donc on peut changer comme on veut.
+
 1. Créer le sensor avec des stations autour de 'toi'
 Utiliser le service (action)  
+
 ```
 template: 
   - trigger:
@@ -349,13 +359,14 @@ template:
         attributes:        
             stations: "{{ stations_feed.stations }}"
 ```
-Ça donne 
-![image](https://github.com/user-attachments/assets/fc174513-9a06-4d19-a752-f4e91b16b81e)
 
+Ça donne
+![image](https://github.com/user-attachments/assets/fc174513-9a06-4d19-a752-f4e91b16b81e)
 
 2. l'automatisation pour créer des zones qui représentent les stations
 Important: il faut installer ['spook'](https://github.com/frenck/spook) pour avoir les services/actions 'create zone' et 'delete zone'
-Ici par exemple chaque minute une maj (trops je pense) mais on peut aussi utiliser un trigger quand le mobile bouge 
+Ici par exemple chaque minute une maj (trops je pense) mais on peut aussi utiliser un trigger quand le mobile bouge
+
 ```
 alias: Station Zones
 description: ""
@@ -384,10 +395,10 @@ action:
             longitude: "{{ repeat.item.longitude }}"
 mode: single
 ```
+
 3. Créer la carte
 
 ![image](https://github.com/user-attachments/assets/77be362e-7f2a-4cfd-93ee-2165469a1469)
-
 
 ```
 type: custom:auto-entities
