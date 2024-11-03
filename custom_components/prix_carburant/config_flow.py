@@ -1,4 +1,5 @@
 """Config flow to configure the Prix Carburant integration."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -6,10 +7,14 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
     CONF_DISPLAY_ENTITY_PICTURES,
@@ -65,7 +70,7 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    async def async_step_import(self, import_info) -> FlowResult:
+    async def async_step_import(self, import_info) -> ConfigFlowResult:
         """Import a config entry from YAML config."""
         entry = await self.async_set_unique_id(DOMAIN)
 
@@ -75,7 +80,7 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return self.async_create_entry(title=DEFAULT_NAME, data=import_info)
 
-    async def async_step_user(self, user_input=None) -> FlowResult:
+    async def async_step_user(self, user_input=None) -> ConfigFlowResult:
         """Get configuration from the user."""
         errors: dict[str, str] = {}
         if user_input is None:
@@ -107,7 +112,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
         """Initialize options flow."""
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input) -> FlowResult:
+    async def async_step_init(self, user_input) -> ConfigFlowResult:
         """Manage the options."""
         errors: dict[str, str] = {}
         if user_input is not None:

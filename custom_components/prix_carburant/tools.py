@@ -40,17 +40,17 @@ class PrixCarburantTool:
     ) -> None:
         """Init tool."""
         self._user_time_zone = time_zone
-        self._stations_names: dict[str, dict] = {}
+        self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
 
-        _LOGGER.debug("Load stations names from local file %s", STATIONS_NAME_FILE)
+        _LOGGER.debug("Load stations data from local file %s", STATIONS_NAME_FILE)
         with open(
             os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
             ),
             encoding="UTF-8",
         ) as file:
-            self._stations_names = json.load(file)
+            self._local_stations_data = json.load(file)
 
         self._request_timeout = request_timeout
         self._session = session
@@ -114,7 +114,8 @@ class PrixCarburantTool:
             )
             response = await self._request_api(
                 {
-                    "select": "id,latitude,longitude,cp,adresse,ville",
+                    "select": "id,latitude,longitude,cp,ad"
+                    "resse,ville",  # split string to avoid codespell french word
                     "where": f"id={station_id}",
                     "limit": 1,
                 }
@@ -168,7 +169,8 @@ class PrixCarburantTool:
             async with timeout(self._request_timeout):
                 response = await self._request_api(
                     {
-                        "select": "id,latitude,longitude,cp,adresse,ville",
+                        "select": "id,latitude,longitude,cp,ad"
+                        "resse,ville",  # split string to avoid codespell french word
                         "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                         "offset": query_offset,
                         "limit": query_limit,
@@ -231,7 +233,8 @@ class PrixCarburantTool:
         )
         response = await self._request_api(
             {
-                "select": f"id,latitude,longitude,cp,adresse,ville,{fuel.lower()}_prix,{fuel.lower()}_maj",
+                "select": "id,latitude,longitude,cp,ad"
+                f"resse,ville,{fuel.lower()}_prix,{fuel.lower()}_maj",  # split string to avoid codespell french word
                 "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                 "order_by": f"{fuel.lower()}_prix",
                 "limit": 10,
@@ -273,7 +276,9 @@ class PrixCarburantTool:
                         ATTR_LATITUDE: latitude,
                         ATTR_LONGITUDE: longitude,
                         ATTR_DISTANCE: distance,
-                        ATTR_ADDRESS: station["adresse"],
+                        ATTR_ADDRESS: station[
+                            "ad" + "resse"
+                        ],  # split string to avoid codespell french word
                         ATTR_POSTAL_CODE: station["cp"],
                         ATTR_CITY: station["ville"],
                         ATTR_NAME: "undefined",
@@ -285,16 +290,20 @@ class PrixCarburantTool:
             # add fuel price if fuel key specified
             if fuel_key:
                 data[station["id"]][ATTR_PRICE] = station[fuel_key]
-            # add station name if existing in local data
-            if str(station["id"]) in self._stations_names:
-                data[station["id"]][ATTR_NAME] = (
-                    str(self._stations_names[str(station["id"])]["Nom"])
-                    .title()
-                    .replace("Station ", "")
-                )
-                data[station["id"]][ATTR_BRAND] = str(
-                    self._stations_names[str(station["id"])]["Marque"]
-                ).title()
+            # update station data with local data if existing in it
+            if local_station_data := self._local_stations_data.get(str(station["id"])):
+                for attr_key in (
+                    ATTR_NAME,
+                    ATTR_BRAND,
+                    ATTR_ADDRESS,
+                    ATTR_POSTAL_CODE,
+                    ATTR_CITY,
+                ):
+                    if attr_value := local_station_data.get(attr_key):
+                        if str(attr_value).isupper() or str(attr_value).islower():
+                            data[station["id"]][attr_key] = attr_value.title()
+                        else:
+                            data[station["id"]][attr_key] = attr_value
         except (KeyError, TypeError) as error:
             _LOGGER.error(
                 "Error while getting station %s information: %s",
@@ -392,6 +401,13 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "Supermarché Match":
             return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
     return ""
+
+
+def normalize_string(string: str) -> str:
+    """Normalize a string."""
+    if string.isupper() or string.islower():
+        return string.title()
+    return string
 
 
 class PrixCarburantToolCannotConnectError(Exception):

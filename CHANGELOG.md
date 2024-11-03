@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 3.8.0
+
+- Normalize name, address and city of stations if put in uppercase or lowercase exclusively
+- Allow to override station data from local file (address, postal code, city, brand, logo)
+- Add fuel type on sensor attributes
+- Add icon for service
+- Sensor entity will now restore last value after a restart if price is not available
+
+## 3.7.0
+
+- Add lat/lon to the output of the service call
+
 ## 3.6.0
 
 - Fix event loop warning

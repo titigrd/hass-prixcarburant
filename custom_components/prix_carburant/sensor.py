@@ -7,12 +7,15 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.sensor import (
+    PLATFORM_SCHEMA_BASE,
+    RestoreSensor,
+    SensorDeviceClass,
+)
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME, CURRENCY_EURO
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -24,6 +27,7 @@ from .const import (
     ATTR_CITY,
     ATTR_DAYS_SINCE_LAST_UPDATE,
     ATTR_DISTANCE,
+    ATTR_FUEL_TYPE,
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
@@ -34,7 +38,7 @@ from .const import (
     DOMAIN,
     FUELS,
 )
-from .tools import PrixCarburantTool, get_entity_picture
+from .tools import PrixCarburantTool, get_entity_picture, normalize_string
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -92,7 +96,7 @@ async def async_setup_entry(
     async_add_entities(entities, True)
 
 
-class PrixCarburant(CoordinatorEntity, SensorEntity):
+class PrixCarburant(CoordinatorEntity, RestoreSensor):
     """Representation of a Sensor."""
 
     _attr_icon = "mdi:gas-station"
@@ -129,16 +133,17 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
             configuration_url="https://www.prix-carburants.gouv.fr/",
         )
         self._attr_extra_state_attributes = {
-            ATTR_NAME: self.station_info[ATTR_NAME],
+            ATTR_NAME: normalize_string(self.station_info[ATTR_NAME]),
             ATTR_BRAND: self.station_info[ATTR_BRAND],
-            ATTR_ADDRESS: self.station_info[ATTR_ADDRESS],
+            ATTR_ADDRESS: normalize_string(self.station_info[ATTR_ADDRESS]),
             ATTR_POSTAL_CODE: self.station_info[ATTR_POSTAL_CODE],
-            ATTR_CITY: self.station_info[ATTR_CITY],
+            ATTR_CITY: normalize_string(self.station_info[ATTR_CITY]),
             ATTR_LATITUDE: self.station_info[ATTR_LATITUDE],
             ATTR_LONGITUDE: self.station_info[ATTR_LONGITUDE],
             ATTR_DISTANCE: self.station_info[ATTR_DISTANCE],
             ATTR_UPDATED_DATE: None,
             ATTR_DAYS_SINCE_LAST_UPDATE: None,
+            ATTR_FUEL_TYPE: self.fuel,
         }
 
     @property
