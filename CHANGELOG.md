@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.8.1
+
+- Fix error when attribues is empty
+
 ## 3.8.0
 
 - Normalize name, address and city of stations if put in uppercase or lowercase exclusively

@@ -403,8 +403,10 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
     return ""
 
 
-def normalize_string(string: str) -> str:
+def normalize_string(string: str | None) -> str:
     """Normalize a string."""
+    if string is None:
+        return ""
     if string.isupper() or string.islower():
         return string.title()
     return string
