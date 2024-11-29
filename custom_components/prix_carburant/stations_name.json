@@ -1555,6 +1555,10 @@
     "name": "RELAIS LE CANNET LA FRAYERE",
     "brand": "Total Access"
   },
+  "6110010": {
+    "name": "Casino Supermarché",
+    "brand": "Casino"
+  },
   "6130001": {
     "name": "AUCHAN GRASSE",
     "brand": "Auchan"
@@ -1835,6 +1839,10 @@
     "name": "CASINO SUPERMARCHE",
     "brand": "Casino"
   },
+  "6370002": {
+    "name": "Auchan Mouans-Sartoux",
+    "brand": "Auchan"
+  },
   "6400001": {
     "name": "SARL MONTFLEURY",
     "brand": "Total"
@@ -2020,7 +2028,7 @@
     "brand": "Avia"
   },
   "6650004": {
-     "name": "CASINO SUPERMARCHE",
+     "name": "Casino Supermarché",
     "brand": "Casino"
   },
   "6660001": {
