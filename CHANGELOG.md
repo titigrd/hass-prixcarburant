@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.8.2
+
+- Fix deprecated code
+
 ## 3.8.1
 
 - Fix error when attribues is empty
