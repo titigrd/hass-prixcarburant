@@ -1,4 +1,4 @@
-# CHANGELOG
+# Changelog
 
 ## 3.8.2
 
