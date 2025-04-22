@@ -1,5 +1,12 @@
 # Changelog
 
+# [3.9.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.8.2...3.9.0) (2025-04-22)
+
+
+### Features
+
+* add release ([4da949d](https://github.com/Aohzan/hass-prixcarburant/commit/4da949d9c39f5bb2e639ab7745d7fbf02229ec68))
+
 ## 3.8.2
 
 - Fix deprecated code
